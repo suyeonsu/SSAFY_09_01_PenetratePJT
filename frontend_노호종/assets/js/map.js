@@ -15,7 +15,7 @@ const map = new kakao.maps.Map(container, options); //지도 생성 및 객체 �
 
 // =============
 // 시작 - 초기 로딩시 내 위치로 이동
-// moveToCurrent();
+moveToCurrent();
 // 끝 - 초기 로딩시 내 위치로 이동
 // =============
 
@@ -141,7 +141,7 @@ async function getAreaInfo() {
 		neLon: neLatLng.La,
 	};
 
-	const url = "http://" + location.host + "/enjoytrip/tour"; // 여기에 API url.
+	const url = `http://${location.host}/enjoytrip/tour`; // 여기에 API url.
 	const fetchOption = {
 		method: "POST",
 		headers: {

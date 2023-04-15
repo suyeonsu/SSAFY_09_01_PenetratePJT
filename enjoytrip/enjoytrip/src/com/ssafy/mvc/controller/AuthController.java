@@ -45,8 +45,11 @@ public class AuthController extends HttpServlet {
 			} else if (param.equals("join")) {
 				// 회원가입 페이지 이동
 				response.sendRedirect(contextPath + "/user/join.jsp");
+			} else if (param.equals("mypage")){
+				response.sendRedirect(contextPath + "/user/mypage.jsp");
 			}
 			else {
+				response.sendRedirect(contextPath + "/error/error404.jsp");
 				System.out.println("존재하지 않는 url입니다.");
 			}
 		} catch (Exception e) {

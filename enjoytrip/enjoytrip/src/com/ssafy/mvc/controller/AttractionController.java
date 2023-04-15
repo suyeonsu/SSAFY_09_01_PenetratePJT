@@ -31,13 +31,20 @@ public class AttractionController extends HttpServlet {
         String param = request.getParameter("param");
         System.out.println(request);
         if (param.equals("map")) {
-            getAttractionList(request, response);
-        } else {
+//            getAttractionList(request, response);
+        	request.getRequestDispatcher("/tour/tour.jsp").forward(request, response);
+        }
+        else if(param.equals("hotplace")){
+            response.sendRedirect(contextPath + "/tour/hotplace.jsp");
+        }
+        else if(param.equals("tourplan")){
+            response.sendRedirect(contextPath + "/tour/tourplan.jsp");
+        }
+        else {
             response.sendRedirect(contextPath + "/error/error404.jsp");
         }
     }
-
-    private void getAttractionList(HttpServletRequest request, HttpServletResponse response) {
+	private void getAttractionList(HttpServletRequest request, HttpServletResponse response) {
         System.out.println("관광지 목록 조회 요청 수신");
         try {
             //파라미터가 없는 경우 처리
@@ -70,10 +77,9 @@ public class AttractionController extends HttpServlet {
             //해당 JSON문자열을 클라이언트에게 반환
             response.setContentType("application/json;charset=utf-8");
             response.getWriter().append(jsonAttractionList);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
+            
+            
+        } catch (Exception e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
         }
