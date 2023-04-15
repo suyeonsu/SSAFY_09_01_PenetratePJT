@@ -67,9 +67,6 @@
     <!-- 카카오 맵 JavaScript -->
     <script  type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=c27c029a47d8b36a3390ddda157d4950"></script>
     <script  src="${root}/assets/js/tour.js"></script>
-
-    <!-- Template Javascript -->
-    <script  src="${root}/assets/js/main.js"></script>
 </body>
 
 </html>

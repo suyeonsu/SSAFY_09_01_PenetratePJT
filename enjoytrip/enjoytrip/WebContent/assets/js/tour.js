@@ -141,7 +141,7 @@ async function getAreaInfo() {
 		neLon: neLatLng.La,
 	};
 
-	const url = "http://" + location.host + "/enjoytrip/tour"; // 여기에 API url.
+	const url = `http://${location.host}/enjoytrip/tour?param=map`; // 여기에 API url.
 	const fetchOption = {
 		method: "POST",
 		headers: {
@@ -161,17 +161,20 @@ async function makeMarkPositions() {
 
 	const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
 
-	for (item of response.response.body.items.item) {
+	for (item of response) {
 		// console.log(item);
 		// contentType에 따라 markPositions에 분류해서 넣는다.
 		// 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
+		if (!Object.hasOwn(contents, item.contentTypeId)) {
+			continue;
+		}
 		const ind = contents[item.contentTypeId]; // 12 => 0, 32 => 1
 		markPositions[ind].push({
 			title: item.title,
 			addr1: item.addr1,
 			image: item.firstimage,
 			tel: item.tel,
-			latlng: new kakao.maps.LatLng(item.mapy, item.mapx),
+			latlng: new kakao.maps.LatLng(item.latitude, item.longitude),
 		});
 	}
 	// console.log(markPositions);
@@ -194,7 +197,7 @@ async function makeMarkPositionsTest() {
 	const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
 
 	for (item of response.response.body.items.item) {
-		console.log(item);
+		//console.log(item);
 		// contentType에 따라 markPositions에 분류해서 넣는다.
 		// 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
 		const ind = contents[item.contenttypeid]; // 12 => 0, 32 => 1
@@ -229,8 +232,8 @@ function makeMarkMarkers() {
 		markMarkers[x].length = 0; // 초기화
 		// 장소 위,경도 배열
 		const imageSize = new kakao.maps.Size(22, 26); // 마커 이미지 사이즈
-		const markerImageSrc = `./assets/img/mapMarker/${imgName[x]}`;
-
+		const markerImageSrc = `http://${location.host}/enjoytrip/assets/img/mapMarker/${imgName[x]}`;
+		console.log(markerImageSrc);
 		// 마커 이미지 생성
 		const markerImage = createMarkerImage(markerImageSrc, imageSize);
 		for (let y = 0; y < markPositions[x].length; y++) {
@@ -249,7 +252,7 @@ for (let i = 0; i < categoryMenuEls.length; i++) {
 	categoryMenuEls.item(i).addEventListener("click", async () => {
 		if (categoryMenuEls.item(i).classList.toggle("menu_selected")) {
 			// 현재 메뉴가 선택된다면
-			   await makeMarkPositions();
+			await makeMarkPositions();
 			//await makeMarkPositionsTest(); // 테스트용 드라이버
 
 			for (let x = 0; x < markMarkers.length; x++) {

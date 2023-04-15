@@ -29,7 +29,7 @@ public class AttractionController extends HttpServlet {
         String contextPath = request.getContextPath();
         // 요청 경로 가져오기
         String param = request.getParameter("param");
-
+        System.out.println(request);
         if (param.equals("map")) {
             getAttractionList(request, response);
         } else {
@@ -100,7 +100,5 @@ public class AttractionController extends HttpServlet {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        doGet(request, response);
     }
 }
