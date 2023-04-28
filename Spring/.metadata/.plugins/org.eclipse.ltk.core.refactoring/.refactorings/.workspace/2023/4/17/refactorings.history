@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Delete resource &apos;penetrate_pjt&apos;" deleteContents="false" description="Delete resource &apos;penetrate_pjt&apos;" element1="/penetrate_pjt" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1682649535059"/>
+</session>

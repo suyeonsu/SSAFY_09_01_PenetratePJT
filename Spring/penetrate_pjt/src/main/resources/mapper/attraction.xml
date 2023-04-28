@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ssafy.group5.model.mapper.AttractionMapper">
+
+	<select id="getAttractionList" resultType="Attraction">
+		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude from attraction_info
+	</select>
+	
+	<select id="getAttractionList" parameterType="List">
+		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude
+		from attraction_info
+		where latitude between #{여기} and #{여기} and longitude between ? and ?
+	</select>
+
+</mapper>
