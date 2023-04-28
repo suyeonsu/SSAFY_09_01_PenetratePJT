@@ -22,7 +22,7 @@ public class WebMvcConfig implements WebMvcConfigurer {
 		// TODO Auto-generated method stub
 		
 		registry.addInterceptor(sessionConfirmInterceptor)
-		.addPathPatterns("/group5/**"); // 접근제어 필요한 url
+		.addPathPatterns("/book/**");
 	}
 	
 }

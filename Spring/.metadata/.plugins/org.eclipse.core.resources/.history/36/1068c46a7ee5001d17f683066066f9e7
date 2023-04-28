@@ -16,7 +16,7 @@ public class LoggingAspect {
 	private Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
 	
 	//Controller, Service, Dao의 모든 메소드가 실행되기 전 로그 찍기
-	@Before(value = "execution(* com.ssafy.group5.model..*.*(..)) || execution(* com.ssafy.group5.controller.*.*(..))")
+	@Before(value = "execution(* com.ssafy.boot.model..*.*(..)) || execution(* com.ssafy.boot.controller.*.*(..))")
 	public void loggingAdvice(JoinPoint jp) {
 		logger.debug("메소드 선언부 : {}, 전달 파라미터 : {}", jp.getSignature(), Arrays.toString(jp.getArgs()));
 	}

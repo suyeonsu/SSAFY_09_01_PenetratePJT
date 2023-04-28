@@ -13,3 +13,6 @@ mybatis.type-aliases-package=com.ssafy.group5.dto
 # 로그 레벨 설정
 logging.level.com.ssafy.boot=debug
 logging.level.root=info
+# ViewResolver 설정
+spring.mvc.view.prefix=/WEB-INF/views/
+spring.mvc.view.suffix=.jsp
