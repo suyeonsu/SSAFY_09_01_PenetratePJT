@@ -2,6 +2,7 @@ package com.ssafy.group5.model.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.ssafy.group5.dto.Hotplace;
 
@@ -20,7 +21,7 @@ public interface HotplaceService {
 	/** 
 	 * 지역별 핫플레이스 조회
 	 */
-	List<Hotplace> selectBySidoGugun(int sidoCode, int gugunCdoe) throws SQLException;
+	List<Hotplace> selectBySidoGugun(Map<String, Integer> code) throws SQLException;
 	
 	/**
 	 * 관광지 테아별 핫플레이스 조회
@@ -32,10 +33,5 @@ public interface HotplaceService {
 	 * ex) 4.0 이상, 3.0이상, ...
 	 */
 	List<Hotplace> selectByStar(int val) throws SQLException;
-	
-	/**
-	 * 핫플레이스 등록
-	 */
-	void registerHotplace(Hotplace hotplace) throws SQLException;
 	
 }

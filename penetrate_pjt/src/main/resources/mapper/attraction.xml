@@ -15,20 +15,27 @@
 
 	<!-- 관광지 전체 조회 -->
 	<select id="selectAll" resultMap="AttractionMap">
-		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview
+		select *
 		from attraction
 	</select>
 	
 	<!-- 관광지 테마별 조회 -->
 	<select id="selectByType" parameterType="Integer" resultMap="AttractionMap">
-		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview 
-		from attraction 
+		select * 
+		from attraction
 		where content_type_id=#{contentTypeId}
+	</select>
+	
+	<!-- 관광지 지역별 조회 -->
+	<select id="selectBySidoGugun" parameterType="Map" resultType="AttractionMap">
+		select *
+		from attraction
+		where sido_code=#{sido} and gugun_code=#{gugun}
 	</select>
 
 	<!-- 관광지 상세 조회 -->
 	<select id="selectById" parameterType="Integer" resultMap="AttractionMap">
-		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview
+		select *
 		from attraction
 		where content_id=#{contentId}
 	</select>

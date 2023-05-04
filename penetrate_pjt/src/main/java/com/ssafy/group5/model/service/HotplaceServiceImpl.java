@@ -2,6 +2,7 @@ package com.ssafy.group5.model.service;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,8 @@ public class HotplaceServiceImpl implements HotplaceService {
 	}
 
 	@Override
-	public List<Hotplace> selectBySidoGugun(int sidoCode, int gugunCdoe) throws SQLException {
-		return hotplaceMapper.selectBySidoGugun(sidoCode, gugunCdoe);
+	public List<Hotplace> selectBySidoGugun(Map<String, Integer> code) throws SQLException {
+		return hotplaceMapper.selectBySidoGugun(code);
 	}
 
 	@Override
@@ -38,11 +39,6 @@ public class HotplaceServiceImpl implements HotplaceService {
 	@Override
 	public List<Hotplace> selectByStar(int val) throws SQLException {
 		return hotplaceMapper.selectByStar(val);
-	}
-
-	@Override
-	public void registerHotplace(Hotplace hotplace) throws SQLException {
-		hotplaceMapper.registerHotplace(hotplace);
 	}
 
 }

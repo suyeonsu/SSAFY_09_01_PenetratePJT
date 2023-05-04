@@ -2,6 +2,7 @@ package com.ssafy.group5.model.mapper;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 
 import com.ssafy.group5.dto.Hotplace;
 
@@ -15,7 +16,7 @@ public interface HotplaceMapper {
 	/** 
 	 * 지역별 핫플레이스 조회
 	 */
-	List<Hotplace> selectBySidoGugun(int sidoCode, int gugunCdoe) throws SQLException;
+	List<Hotplace> selectBySidoGugun(Map<String, Integer> code) throws SQLException;
 	
 	/**
 	 * 관광지 테마별 핫플레이스 조회
@@ -32,10 +33,5 @@ public interface HotplaceMapper {
 	 * 핫플레이스 상세 조회
 	 */
 	Hotplace selectById(int contentId) throws SQLException;
-	
-	/**
-	 * 핫플레이스 등록
-	 */
-	void registerHotplace(Hotplace hotplace) throws SQLException;
 	
 }

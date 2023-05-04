@@ -4,4 +4,41 @@
     
 <mapper namespace="com.ssafy.group5.model.mapper.HotplaceMapper">
 
+	<resultMap type="Hotplace" id="HotplaceMap">
+		<id column="content_id" property="contentId"/>
+		<id column=""/>
+	</resultMap>
+
+	<select id="selectAll" resultMap="HotplaceMap">
+		select *
+		from hotplace h left join attraction a on h.content_id = a.content_id;
+	</select>
+	
+	<select id="selectBySidoGugun" parameterType="Map" resultMap="HotplaceMap">
+		select *
+		from hotplace h join attraction a on h.content_id = a.content_id
+		where sido_code=#{sidoCode} and gugun_code=#{gugunCode}
+	</select>
+	
+	<select id="selectByType" parameterType="int" resultMap="HotplaceMap">
+		select *
+		from hotplace h join attraction a on h.content_id = a.content_id
+		where content_type_id=#{contentTypeId}
+	</select>
+	
+	<select id="selectByStar" parameterType="int" resultMap="HotplaceMap">
+		select *
+		from (select *, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) rate
+			from hotplace) r 
+			left join attraction a 
+			on r.content_id = a.content_id
+		where r.rate >= #{val}
+	</select>
+	
+	<select id="selectById" parameterType="int" resultMap="HotplaceMap">
+		select *
+		from hotplace h left join attraction a on h.content_id=a.content_id
+		where h.content_id=#{contentId}
+	</select>
+	
 </mapper>
