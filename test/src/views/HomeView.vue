@@ -27,6 +27,6 @@ export default {
 <style lang="scss" scoped>
 .home {
   background-color: pink;
-  height: 100vh;
+  height: 90vh;
 }
 </style>

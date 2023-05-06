@@ -4,7 +4,7 @@
 </template>
 
 <script>
-import HeadNav from "@/components/HeadNav.vue";
+import HeadNav from "@/components/HeadNavComp.vue";
 export default {
   components: {
     HeadNav,
