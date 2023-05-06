@@ -3,10 +3,10 @@
 const container = document.getElementById("map"); //지도를 담을 영역의 DOM 레퍼런스
 
 const options = {
-	//지도를 생성할 때 필요한 기본 옵션
-	// center: new kakao.maps.LatLng(crd.latitude, crd.longitude), //지도의 중심좌표.
-	center: new kakao.maps.LatLng(37.498004414546934, 127.02770621963765), //지도의 중심좌표.
-	level: 4, //지도의 레벨(확대, 축소 정도)
+  //지도를 생성할 때 필요한 기본 옵션
+  // center: new kakao.maps.LatLng(crd.latitude, crd.longitude), //지도의 중심좌표.
+  center: new kakao.maps.LatLng(37.498004414546934, 127.02770621963765), //지도의 중심좌표.
+  level: 4, //지도의 레벨(확대, 축소 정도)
 };
 
 const map = new kakao.maps.Map(container, options); //지도 생성 및 객체 리턴
@@ -38,37 +38,37 @@ map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
 // 시작 - 공통 함수 영역
 // 1. 해당 위치로 맵 이동하기
 function movePosition(lat, lon) {
-	const moveLatLon = new kakao.maps.LatLng(lat, lon);
-	map.panTo(moveLatLon);
+  const moveLatLon = new kakao.maps.LatLng(lat, lon);
+  map.panTo(moveLatLon);
 }
 
 // 2. 내 현재 위치로 맵 이동하기
 // geolocation 객체에서 내 현재 위치 불러오기
 function moveToCurrent() {
-	navigator.geolocation.getCurrentPosition(mapInitSuccess, mapInitError);
+  navigator.geolocation.getCurrentPosition(mapInitSuccess, mapInitError);
 }
 // 위치 얻기 성공시
 function mapInitSuccess(pos) {
-	const crd = pos.coords;
-	// console.log(crd);
-	movePosition(crd.latitude, crd.longitude);
+  const crd = pos.coords;
+  // console.log(crd);
+  movePosition(crd.latitude, crd.longitude);
 }
 // 에러 발생시
 function mapInitError(err) {
-	console.log(err);
+  console.log(err);
 }
 
 // 3. 위치 배열 및 마커 배열 초기화
 function positionInit() {
-	for (let x = 0; x < markPositions.length; x++) {
-		markPositions[x].length = 0;
-	}
-	for (let x = 0; x < markMarkers.length; x++) {
-		for (let y = 0; y < markMarkers[x].length; y++) {
-			markMarkers[x][y].setMap(null);
-		}
-		markMarkers[x].length = 0;
-	}
+  for (let x = 0; x < markPositions.length; x++) {
+    markPositions[x].length = 0;
+  }
+  for (let x = 0; x < markMarkers.length; x++) {
+    for (let y = 0; y < markMarkers[x].length; y++) {
+      markMarkers[x][y].setMap(null);
+    }
+    markMarkers[x].length = 0;
+  }
 }
 // 끝
 // =============
@@ -104,18 +104,18 @@ function positionInit() {
 
 // 마커이미지의 주소와, 크기, 옵션으로 마커 이미지를 생성하여 리턴하는 함수입니다
 function createMarkerImage(src, size, options) {
-	const markerImage = new kakao.maps.MarkerImage(src, size, options);
-	return markerImage;
+  const markerImage = new kakao.maps.MarkerImage(src, size, options);
+  return markerImage;
 }
 
 // 좌표와 마커이미지를 받아 마커를 생성하여 리턴하는 함수입니다
 function createMarker(position, image) {
-	const marker = new kakao.maps.Marker({
-		position: position,
-		image: image,
-	});
+  const marker = new kakao.maps.Marker({
+    position: position,
+    image: image,
+  });
 
-	return marker;
+  return marker;
 }
 
 const markPositions = [[], [], [], [], [], [], []];
@@ -125,160 +125,160 @@ const markMarkers = [[], [], [], [], [], [], []];
 
 // 1. 백엔드로부터 현재 화면 영역 내부의 정보들을 가져온다.
 async function getAreaInfo() {
-	// 현재 보이는 영역의 중심좌표와 확대 정도를 fetch하여 해당 지역의 정보를 받아온다.
-	// level당 단위길이 의미: 20m 30m 50m 100m 250m 500m 1km 2km 4km 8km 16km 32km 64km 128km
-	const center = map.getCenter(); // 중심 좌표. La : longitude, Ma : latitude
-	const bounds = map.getBounds(); // 영역 정보
-	const swLatLng = bounds.getSouthWest(); // 남서 꼭지점 좌표
-	const neLatLng = bounds.getNorthEast(); // 북동 꼭지점 좌표
+  // 현재 보이는 영역의 중심좌표와 확대 정도를 fetch하여 해당 지역의 정보를 받아온다.
+  // level당 단위길이 의미: 20m 30m 50m 100m 250m 500m 1km 2km 4km 8km 16km 32km 64km 128km
+  const center = map.getCenter(); // 중심 좌표. La : longitude, Ma : latitude
+  const bounds = map.getBounds(); // 영역 정보
+  const swLatLng = bounds.getSouthWest(); // 남서 꼭지점 좌표
+  const neLatLng = bounds.getNorthEast(); // 북동 꼭지점 좌표
 
-	const mapAreaInfo = {
-		centerLat: center.Ma, // 중심 latitude
-		centerLon: center.La, // 중심 longitude
-		swLat: swLatLng.Ma,
-		swLon: swLatLng.La,
-		neLat: neLatLng.Ma,
-		neLon: neLatLng.La,
-	};
+  const mapAreaInfo = {
+    centerLat: center.Ma, // 중심 latitude
+    centerLon: center.La, // 중심 longitude
+    swLat: swLatLng.Ma,
+    swLon: swLatLng.La,
+    neLat: neLatLng.Ma,
+    neLon: neLatLng.La,
+  };
 
-	const url = `http://${location.host}/enjoytrip/tour`; // 여기에 API url.
-	const fetchOption = {
-		method: "POST",
-		headers: {
-			"Content-Type": "application/json",
-		},
-		body: JSON.stringify(mapAreaInfo),
-	};
+  const url = `http://${location.host}/enjoytrip/tour`; // 여기에 API url.
+  const fetchOption = {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(mapAreaInfo),
+  };
 
-	const response = await fetch(url, fetchOption);
-	return response.json();
+  const response = await fetch(url, fetchOption);
+  return response.json();
 }
 
 // 가져온 정보들이 json으로 파싱돼있으므로 이를 맵 객체에 담는다.
 async function makeMarkPositions() {
-	positionInit();
-	const response = await getAreaInfo();
+  positionInit();
+  const response = await getAreaInfo();
 
-	const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
+  const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
 
-	for (item of response.response.body.items.item) {
-		// console.log(item);
-		// contentType에 따라 markPositions에 분류해서 넣는다.
-		// 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
-		const ind = contents[item.contentTypeId]; // 12 => 0, 32 => 1
-		markPositions[ind].push({
-			title: item.title,
-			addr1: item.addr1,
-			image: item.firstimage,
-			tel: item.tel,
-			latlng: new kakao.maps.LatLng(item.mapy, item.mapx),
-		});
-	}
-	// console.log(markPositions);
-	makeMarkMarkers(); // 가져온 객체들로 마커 생성하기
+  for (item of response.response.body.items.item) {
+    // console.log(item);
+    // contentType에 따라 markPositions에 분류해서 넣는다.
+    // 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
+    const ind = contents[item.contentTypeId]; // 12 => 0, 32 => 1
+    markPositions[ind].push({
+      title: item.title,
+      addr1: item.addr1,
+      image: item.firstimage,
+      tel: item.tel,
+      latlng: new kakao.maps.LatLng(item.mapy, item.mapx),
+    });
+  }
+  // console.log(markPositions);
+  makeMarkMarkers(); // 가져온 객체들로 마커 생성하기
 }
 
 /** 테스트용 드라이버 시작*/
 async function testDriver() {
-	// 공공데이터 api로 예시 데이터 가져와보기
-	const response = await fetch(
-		"https://apis.data.go.kr/B551011/KorService1/locationBasedList1?serviceKey=Ee0EApL3oZ3hp4%2BOc13AHLXzxi8eCyupR6C1Od3o12ybTMrN%2F3PuLRSVWpaAoNkZtosEJERnAV%2BCmhPyo8d5Jw%3D%3D&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A&mapX=126.981611&mapY=37.568477&radius=1000&contentTypeId=15"
-	);
-	return response.json();
+  // 공공데이터 api로 예시 데이터 가져와보기
+  const response = await fetch(
+    "https://apis.data.go.kr/B551011/KorService1/locationBasedList1?serviceKey=Ee0EApL3oZ3hp4%2BOc13AHLXzxi8eCyupR6C1Od3o12ybTMrN%2F3PuLRSVWpaAoNkZtosEJERnAV%2BCmhPyo8d5Jw%3D%3D&numOfRows=10&pageNo=1&MobileOS=ETC&MobileApp=AppTest&_type=json&listYN=Y&arrange=A&mapX=126.981611&mapY=37.568477&radius=1000&contentTypeId=15"
+  );
+  return response.json();
 }
 
 // 잘 들어가는지 테스트
 async function makeMarkPositionsTest() {
-	positionInit();
-	const response = await testDriver();
-	const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
+  positionInit();
+  const response = await testDriver();
+  const contents = { 12: 0, 32: 1, 39: 2, 14: 3, 15: 4, 16: 5 };
 
-	for (item of response.response.body.items.item) {
-		console.log(item);
-		// contentType에 따라 markPositions에 분류해서 넣는다.
-		// 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
-		const ind = contents[item.contenttypeid]; // 12 => 0, 32 => 1
-		// markPositions[ind].push(new kakao.maps.LatLng(item.mapy, item.mapx));
-		markPositions[ind].push({
-			title: item.title,
-			addr1: item.addr1,
-			image: item.firstimage,
-			tel: item.tel,
-			latlng: new kakao.maps.LatLng(item.mapy, item.mapx),
-		});
-	}
-	console.log(markPositions);
-	console.log(markPositions[4][0]);
-	makeMarkMarkers();
+  for (item of response.response.body.items.item) {
+    console.log(item);
+    // contentType에 따라 markPositions에 분류해서 넣는다.
+    // 12: 관광지, 32: 숙박, 39: 음식점, 14: 문화시설, 15: 공연, 38: 쇼핑
+    const ind = contents[item.contenttypeid]; // 12 => 0, 32 => 1
+    // markPositions[ind].push(new kakao.maps.LatLng(item.mapy, item.mapx));
+    markPositions[ind].push({
+      title: item.title,
+      addr1: item.addr1,
+      image: item.firstimage,
+      tel: item.tel,
+      latlng: new kakao.maps.LatLng(item.mapy, item.mapx),
+    });
+  }
+  console.log(markPositions);
+  console.log(markPositions[4][0]);
+  makeMarkMarkers();
 }
 /** 테스트용 드라이버 끝 */
 
 const imgName = [
-	"binoculars-fill.svg",
-	"house-fill.svg",
-	"egg-fried.svg",
-	"book-half.svg",
-	"music-note-beamed.svg",
-	"cart-fill.svg",
-	"bezier2.svg",
+  "binoculars-fill.svg",
+  "house-fill.svg",
+  "egg-fried.svg",
+  "book-half.svg",
+  "music-note-beamed.svg",
+  "cart-fill.svg",
+  "bezier2.svg",
 ];
 
 // markMarkers 채우기
 function makeMarkMarkers() {
-	for (let x = 0; x < markPositions.length; x++) {
-		markMarkers[x].length = 0; // 초기화
-		// 장소 위,경도 배열
-		const imageSize = new kakao.maps.Size(22, 26); // 마커 이미지 사이즈
-		const markerImageSrc = `./assets/img/mapMarker/${imgName[x]}`;
+  for (let x = 0; x < markPositions.length; x++) {
+    markMarkers[x].length = 0; // 초기화
+    // 장소 위,경도 배열
+    const imageSize = new kakao.maps.Size(22, 26); // 마커 이미지 사이즈
+    const markerImageSrc = `./assets/img/mapMarker/${imgName[x]}`;
 
-		// 마커 이미지 생성
-		const markerImage = createMarkerImage(markerImageSrc, imageSize);
-		for (let y = 0; y < markPositions[x].length; y++) {
-			// 마커이미지와 위치정보로 마커를 생성합니다
-			const marker = createMarker(markPositions[x][y]["latlng"], markerImage);
-			// 생성된 마커를 커피숍 마커 배열에 추가합니다
-			markMarkers[x].push(marker);
-		}
-		console.log(markMarkers[x]);
-	}
+    // 마커 이미지 생성
+    const markerImage = createMarkerImage(markerImageSrc, imageSize);
+    for (let y = 0; y < markPositions[x].length; y++) {
+      // 마커이미지와 위치정보로 마커를 생성합니다
+      const marker = createMarker(markPositions[x][y]["latlng"], markerImage);
+      // 생성된 마커를 커피숍 마커 배열에 추가합니다
+      markMarkers[x].push(marker);
+    }
+    console.log(markMarkers[x]);
+  }
 }
 
 // 각 메뉴마다 표시 이벤트 달아주기
 const categoryMenuEls = document.querySelectorAll(".category li");
 for (let i = 0; i < categoryMenuEls.length; i++) {
-	categoryMenuEls.item(i).addEventListener("click", async () => {
-		if (categoryMenuEls.item(i).classList.toggle("menu_selected")) {
-			// 현재 메뉴가 선택된다면
-			//   await makeMarkPositions();
-			await makeMarkPositionsTest(); // 테스트용 드라이버
+  categoryMenuEls.item(i).addEventListener("click", async () => {
+    if (categoryMenuEls.item(i).classList.toggle("menu_selected")) {
+      // 현재 메뉴가 선택된다면
+      //   await makeMarkPositions();
+      await makeMarkPositionsTest(); // 테스트용 드라이버
 
-			for (let x = 0; x < markMarkers.length; x++) {
-				if (x == i) {
-					// 현재 메뉴에 해당하는 마커 표시
-					for (let j = 0; j < markMarkers[x].length; j++) {
-						markMarkers[x][j].setMap(map);
+      for (let x = 0; x < markMarkers.length; x++) {
+        if (x == i) {
+          // 현재 메뉴에 해당하는 마커 표시
+          for (let j = 0; j < markMarkers[x].length; j++) {
+            markMarkers[x][j].setMap(map);
 
-						// 마커에 custom Overlay 클릭 이벤트 추가
-						addCustomOverlayToMarker(markMarkers[x][j], x, j);
-					}
-				} else {
-					// 다른 마커 제거
-					if (categoryMenuEls.item(x).classList.contains("menu_selected")) {
-						categoryMenuEls.item(x).classList.toggle("menu_selected");
-						for (let j = 0; j < markMarkers[x].length; j++) {
-							markMarkers[x][j].setMap(null);
-						}
-					}
-				}
-			}
-		} else {
-			// 현재 메뉴가 선택해제된다면 현재 메뉴의 마커 제거
-			for (let j = 0; j < markMarkers[i].length; j++) {
-				markMarkers[i][j].setMap(null);
-			}
-		}
-		// console.log("markMarkers: ", markMarkers[i]);
-	});
+            // 마커에 custom Overlay 클릭 이벤트 추가
+            addCustomOverlayToMarker(markMarkers[x][j], x, j);
+          }
+        } else {
+          // 다른 마커 제거
+          if (categoryMenuEls.item(x).classList.contains("menu_selected")) {
+            categoryMenuEls.item(x).classList.toggle("menu_selected");
+            for (let j = 0; j < markMarkers[x].length; j++) {
+              markMarkers[x][j].setMap(null);
+            }
+          }
+        }
+      }
+    } else {
+      // 현재 메뉴가 선택해제된다면 현재 메뉴의 마커 제거
+      for (let j = 0; j < markMarkers[i].length; j++) {
+        markMarkers[i][j].setMap(null);
+      }
+    }
+    // console.log("markMarkers: ", markMarkers[i]);
+  });
 }
 // 끝 - 마커 표시 메뉴 및 마커 표시
 // =============
@@ -289,34 +289,34 @@ for (let i = 0; i < categoryMenuEls.length; i++) {
 let selectedOverlay = null;
 
 function addCustomOverlayToMarker(marker, contentIdx, itemIdx) {
-	kakao.maps.event.addListener(marker, "click", function () {
-		// console.log(marker);
-		// console.log(itemIdx);
-		// console.log(markPositions[contentIdx][itemIdx]);
+  kakao.maps.event.addListener(marker, "click", function () {
+    // console.log(marker);
+    // console.log(itemIdx);
+    // console.log(markPositions[contentIdx][itemIdx]);
 
-		if (selectedOverlay != null) {
-			selectedOverlay.setMap(null);
-			selectedOverlay = null;
-		}
-		openOverlay(contentIdx, itemIdx);
+    if (selectedOverlay != null) {
+      selectedOverlay.setMap(null);
+      selectedOverlay = null;
+    }
+    openOverlay(contentIdx, itemIdx);
 
-		// 커스텀 오버레이 지도에 표시
-		selectedOverlay.setMap(map);
-	});
+    // 커스텀 오버레이 지도에 표시
+    selectedOverlay.setMap(map);
+  });
 }
 
 function closeOverlay() {
-	selectedOverlay.setMap(null);
-	selectedOverlay = null;
+  selectedOverlay.setMap(null);
+  selectedOverlay = null;
 }
 
 function openOverlay(contentIdx, itemIdx) {
-	const item = markPositions[contentIdx][itemIdx];
-	const image =
-		item.image === "" ? "/assets/img/overlay-no-image.png" : item.image;
+  const item = markPositions[contentIdx][itemIdx];
+  const image =
+    item.image === "" ? "/assets/img/overlay-no-image.png" : item.image;
 
-	// custom Overlay 내용
-	var content = `
+  // custom Overlay 내용
+  var content = `
 	<div class="map__area-info__wrap">
 		<div class="map__area-info__info">
 			<div class="map__area-info__title">
@@ -441,13 +441,13 @@ function openOverlay(contentIdx, itemIdx) {
 	</style>
 	`;
 
-	// 커스텀 오버레이 생성
-	selectedOverlay = new kakao.maps.CustomOverlay({
-		position: item.latlng, // 마커를 표시할 위치
-		content: content,
-		xAnchor: 0.3,
-		yAnchor: 0.91,
-	});
+  // 커스텀 오버레이 생성
+  selectedOverlay = new kakao.maps.CustomOverlay({
+    position: item.latlng, // 마커를 표시할 위치
+    content: content,
+    xAnchor: 0.3,
+    yAnchor: 0.91,
+  });
 }
 
 // 끝 - 모달 창 표시

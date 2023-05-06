@@ -2,12 +2,10 @@
 
 ## 참여인원
 
-| 이름   |    역할    | GitHub                                      |
-| ------ | :--------: | ------------------------------------------- |
-| 박현준 |   백엔드   | [H4R1B0](https://github.com/H4R1B0)         |
-| 노호종 | 프론트엔드 | [Probe001](https://github.com/Probe001)     |
-| 이경원 |   백엔드   | [KyungWon96](https://github.com/KyungWon96) |
-| 이채림 |   풀스택   | [leecr1215](https://github.com/leecr1215)   |
+| 이름   |    역할    | GitHub                                  |
+| ------ | :--------: | --------------------------------------- |
+| 김수연 |   백엔드   | [suyeonsu](https://github.com/suyeonsu) |
+| 노호종 | 프론트엔드 | [Probe001](https://github.com/Probe001) |
 
 <br>
 

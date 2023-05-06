@@ -474,3 +474,6 @@
 2023-04-28 13:39:57,106 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 1 resource
 2023-04-28 13:39:57,112 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Copying 2 resources
 2023-04-28 13:39:57,121 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered resources.
+2023-04-28 13:39:57,121 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - Using 'UTF-8' encoding to copy filtered properties files.
+2023-04-28 13:39:57,122 [Worker-12: Building] INFO  o.e.m.c.i.embedder.EclipseLogger - skip non existing resourceDirectory C:\Users\hojon\Documents\SSAFY\first\02.PenetratePJT\SSAFY_09_01_PenetratePJT\Spring\penetrate_pjt\src\test\resources
+2023-04-30 14:41:23,398 [Worker-5: Loading available Gradle versions] INFO  o.e.b.c.i.u.g.PublishedGradleVersions - Gradle version information cache is out-of-date. Trying to update.
