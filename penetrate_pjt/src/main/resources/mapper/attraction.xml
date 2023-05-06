@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ssafy.group5.model.mapper.AttractionMapper">
+
+	<resultMap type="Attraction" id="AttractionMap">
+		<id column="content_id" property="contentId"/>
+		<id column="content_type_id" property="contentTypeId"/>
+		<id column="first_image" property="firstImage"/>
+		<id column="first_image2" property="firstImage2"/>
+		<id column="sido_code" property="sidoCode"/>
+		<id column="gugun_code" property="gugunCode"/>
+	</resultMap>
+
+	<!-- 관광지 전체 조회 -->
+	<select id="selectAll" resultMap="AttractionMap">
+		select *
+		from attraction
+	</select>
+	
+	<!-- 관광지 테마별 조회 -->
+	<select id="selectByType" parameterType="Integer" resultMap="AttractionMap">
+		select * 
+		from attraction
+		where content_type_id=#{contentTypeId}
+	</select>
+	
+	<!-- 관광지 지역별 조회 -->
+	<select id="selectBySidoGugun" parameterType="Map" resultType="AttractionMap">
+		select *
+		from attraction
+		where sido_code=#{sido} and gugun_code=#{gugun}
+	</select>
+
+	<!-- 관광지 상세 조회 -->
+	<select id="selectById" parameterType="Integer" resultMap="AttractionMap">
+		select *
+		from attraction
+		where content_id=#{contentId}
+	</select>
+
+</mapper>
