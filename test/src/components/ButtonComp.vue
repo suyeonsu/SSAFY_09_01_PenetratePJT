@@ -25,7 +25,8 @@ $now: $primary;
   color: $now;
   font-size: 1rem;
   font-weight: bold;
-  font-family: "Gowun Dodum", "Gugi";
+  border-radius: 10px;
+  transition: 0.5s;
   cursor: pointer;
   &:hover,
   &.fill {

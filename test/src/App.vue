@@ -15,7 +15,8 @@ export default {
 <style lang="scss">
 @import url("https://cdn.jsdelivr.net/npm/reset-css@5.0.1/reset.min.css");
 @import url("https://fonts.googleapis.com/css2?family=Gowun+Dodum&family=Gugi&family=Nanum+Pen+Script&family=Oswald&display=swap");
-#app {
+#app,
+* {
   font-family: "Gowun Dodum", "Gugi", "Nanum Pen Script", "Oswald", Avenir,
     Helvetica, Arial, sans-serif;
 }

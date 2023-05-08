@@ -3,7 +3,7 @@
     <ProjectIconComp />
     <nav>
       <router-link :to="{ name: 'home' }">홈</router-link>
-      <router-link :to="{ name: 'tour' }">여행지</router-link>
+      <router-link :to="{ name: 'searchList' }">여행지</router-link>
       <router-link :to="{ name: 'login' }">
         <ButtonComp>로그인</ButtonComp>
       </router-link>
@@ -31,7 +31,6 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid red;
   padding: 1rem 10%;
   height: 10vh;
   box-sizing: border-box;
@@ -40,6 +39,9 @@ export default {
       color: $primary;
       text-decoration: none;
       margin: 1rem;
+      &:hover {
+        color: $secondary;
+      }
     }
   }
 }

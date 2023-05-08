@@ -1,13 +1,8 @@
 <template>
   <div class="home">
     <main class="container">
-      <h1>
-        지금 바로 <br />
-        떠나볼까요?
-      </h1>
-      한번의 클릭으로 여정을 시작해봅시다
-      <router-link :to="{ name: 'tour' }">
-        <ButtonComp>여정 시작하기</ButtonComp>
+      <router-link :to="{ name: 'searchList' }">
+        <ButtonComp class="huge">여정 시작하기</ButtonComp>
       </router-link>
     </main>
   </div>
@@ -26,7 +21,15 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  background-color: pink;
+  background-image: url("@/assets/image/home.jpg");
+  background-size: cover;
   height: 90vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  .huge {
+    font-size: 2rem;
+    border: 2px solid $primary;
+  }
 }
 </style>

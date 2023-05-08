@@ -1,7 +1,7 @@
 <template>
   <div class="tour">
     <div id="map">
-      <div :class="{ 'side-bar': true, hidden }">
+      <div class="side-bar">
         <ul class="category">
           <template v-for="category in this.categories" :key="category.id">
             <li :id="category.id">
@@ -10,12 +10,10 @@
             </li>
           </template>
         </ul>
-        <router-link
-          class="opener"
-          @click="toggleSideBar"
-          :to="{ name: 'searchList' }">
-        </router-link>
-        <router-view></router-view>
+        <div :class="{ list: true, hidden }">
+          <div class="opener" @click="toggleSideBar"></div>
+          <router-view></router-view>
+        </div>
       </div>
     </div>
   </div>
@@ -56,8 +54,13 @@ export default {
           image: "binoculars-fill",
           text: "쇼핑",
         },
+        {
+          id: 7,
+          image: "binoculars-fill",
+          text: "명소",
+        },
       ],
-      hidden: true,
+      hidden: true, // 나중에 true로 바꿔주기
     };
   },
   mounted() {
@@ -113,30 +116,30 @@ export default {
   background: tomato;
   #map {
     position: absolute;
-    overflow: hidden;
     width: 100%;
     height: 100%;
   }
   .side-bar {
     // 사이드바
-    width: 25vw;
+    width: 70px;
     height: 100%;
-    background: blue;
     position: absolute;
-    transition: 0.3s;
-    z-index: 9;
     top: 0;
-    &.hidden {
-      transform: translateX(-100%); // 집어넣기
-    }
+    left: 0;
+    z-index: 3;
+
     .category {
       // 상단부 메뉴
       position: absolute;
-      top: 10px;
-      right: 0;
-      transform: translate(105%, 0);
+      top: 0;
+      left: 0;
+      height: 100%;
       background: white;
       display: flex;
+      flex-direction: column;
+      z-index: 3;
+      border-top: 1px solid lightgrey;
+      border-right: 1px solid lightgray;
       li {
         // 상단 메뉴 아이콘들
         width: 70px;
@@ -146,7 +149,6 @@ export default {
         align-items: center;
         justify-content: center;
         box-sizing: border-box;
-        border: 1px solid $primary;
         cursor: pointer;
         &:hover {
           background-color: $primary;
@@ -159,84 +161,29 @@ export default {
         }
       }
     }
-    .opener {
-      // 사이드바 토글용 버튼
-      width: 20px;
-      height: 40px;
-      background-color: pink;
+    .list {
       position: absolute;
-      top: 50%;
-      right: 0;
-      transform: translate(100%, -50%);
+      left: 70px;
+      width: 25vw;
+      height: 100%;
+      transition: 0.5s;
+      z-index: 2;
+      &.hidden {
+        transform: translateX(-100%);
+        z-index: -1;
+      }
+      .opener {
+        // 사이드바 토글용 버튼
+        width: 20px;
+        height: 40px;
+        background-color: pink;
+        position: absolute;
+        top: 50%;
+        right: 0;
+        transform: translate(100%, -50%);
+        cursor: pointer;
+      }
     }
   }
-}
-/* customOverlay */
-.overlaybox {
-  position: relative;
-  width: 250px;
-  height: 250px;
-  background-color: #2b2d36;
-  /* background: url("https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/box_movie.png")
-    no-repeat; */
-  padding: 15px 10px;
-}
-.overlaybox div,
-ul {
-  overflow: hidden;
-  margin: 0;
-  padding: 0;
-}
-.overlaybox li {
-  list-style: none;
-}
-.overlaybox .title {
-  color: #fff;
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 8px;
-}
-
-.overlaybox ul {
-  width: inherit;
-}
-.overlaybox li {
-  position: relative;
-  margin-bottom: 2px;
-  background: #2b2d36;
-  padding: 5px 10px;
-  color: #aaabaf;
-  line-height: 1;
-}
-
-.overlaybox img {
-  width: 230px;
-}
-
-.overlaybox li span {
-  display: inline-block;
-}
-.overlaybox li .content-title {
-  font-size: 15px;
-  font-weight: bold;
-}
-.overlaybox li .content-detail {
-  font-size: 13px;
-}
-.overlay-arrow {
-  border: 0px solid transparent;
-  border-bottom: 10px solid rgba(0, 0, 0, 0);
-  top: 6px;
-  position: relative;
-  right: -27%;
-}
-.overlay-arrow::before {
-  border: 10px solid transparent;
-  border-top: 8px solid #2b2d36;
-  /* top: 101px; */
-  content: "";
-  /* position: absolute; */
-  /* position: relative; */
-  /* right: 50%; */
 }
 </style>
