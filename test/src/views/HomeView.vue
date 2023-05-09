@@ -21,12 +21,14 @@ export default {
 
 <style lang="scss" scoped>
 .home {
-  background-image: url("@/assets/image/home.jpg");
-  background-size: cover;
   height: 90vh;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+  box-sizing: border-box;
+  background-image: url("@/assets/image/home.jpg");
+  background-size: 100% 100%;
   .huge {
     font-size: 2rem;
     border: 2px solid $primary;
