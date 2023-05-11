@@ -33,7 +33,7 @@
           </span>
         </div> -->
 
-        <button class="button">회원 가입</button>
+        <button :disabled="isError" class="button">회원 가입</button>
       </form>
     </div>
   </div>
@@ -57,17 +57,20 @@ export default {
         password: "",
       },
       confirmPassword: "",
+      isError: false, // 에러 발생 시 회원가입 버튼 비활성화
     };
   },
   watch: {
     "user.id"(now) {
       // 여기에 아이디 중복 여부 api 넣기
       console.log(now);
-      this.duplicateError = "아이디가 중복되었습니다.";
+      // this.duplicateError = "아이디가 중복되었습니다.";
+      // this.isError = true; //
     },
     confirmPassword(now) {
       this.samePasswordError =
-        now != this.user.password ? "비밀번호와 일치하지 않습니다." : "";
+        now !== this.user.password ? "비밀번호와 일치하지 않습니다." : "";
+      this.isError = !!this.samePasswordError;
     },
   },
   methods: {
@@ -84,6 +87,7 @@ export default {
       this.confirmPassword = data;
     },
     submitHandler() {
+      // 회원가입 이벤트 처리
       console.log(this.user);
     },
   },
@@ -130,6 +134,10 @@ export default {
         color: $background;
         font-weight: bold;
         cursor: pointer;
+        &:disabled {
+          color: grey;
+          background-color: darkgray;
+        }
       }
     }
   }

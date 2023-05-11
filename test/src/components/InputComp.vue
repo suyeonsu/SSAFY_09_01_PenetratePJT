@@ -45,6 +45,10 @@ export default {
       type: Boolean,
       default: false,
     },
+    defaultMessage: {
+      type: String,
+      default: "",
+    },
   },
   computed: {
     error() {
@@ -53,6 +57,9 @@ export default {
       }
       return this.errorMsg === "" ? false : true;
     },
+  },
+  created() {
+    this.msg = this.defaultMessage;
   },
   watch: {
     msg(nowMsg) {

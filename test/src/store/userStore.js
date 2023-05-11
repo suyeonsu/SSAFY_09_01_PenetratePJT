@@ -3,16 +3,30 @@ import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", {
   // data
   state: () => ({
-    user: {
+    userInfo: {
+      // 유저 정보
       id: "",
-      name: "",
-      password1: "",
-      password2: "",
+      name: "노호종",
     },
-    input: "",
+    accessToken: "",
   }),
   //computed
   getters: {},
   //methods
-  actions: {},
+  actions: {
+    getCookies(cName) {
+      // 쿠키 가져오기.
+      const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
+        const [key, value] = cookie.split("=");
+        acc[key] = decodeURIComponent(value);
+        return acc;
+      }, {});
+      return cookies[cName];
+    },
+    removeCookie(cName) {
+      //쿠키 삭제하기
+      const nowDate = new Date();
+      document.cookie = `${cName}=; ${nowDate}; path=/;`;
+    },
+  },
 });

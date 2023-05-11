@@ -3,13 +3,13 @@
     <div class="container">
       <ProjectIconCompVue class="logo" />
       <form class="login-form" @submit.prevent="submitHandler">
-        <InputCompVue required @changeValue="mm">아이디</InputCompVue>
-        <InputCompVue required type="password" @changeValue="mm"
+        <InputCompVue required @changeValue="setName">아이디</InputCompVue>
+        <InputCompVue required type="password" @changeValue="setPassword"
           >비밀번호</InputCompVue
         >
         <label class="checkbox">
-          <input type="checkbox" />
-          로그인 상태 유지
+          <input type="checkbox" v-model="user.isRemember" />
+          로그인 유지
         </label>
         <button class="main-button">로그인</button>
         <div class="sub-menu">
@@ -27,17 +27,58 @@
 <script>
 import InputCompVue from "@/components/InputComp.vue";
 import ProjectIconCompVue from "@/components/ProjectIconComp.vue";
+import { useUserStore } from "@/store/userStore";
+import { mapStores } from "pinia";
+import jwt_decode from "jwt-decode";
+
 export default {
+  data() {
+    return {
+      user: {
+        id: "",
+        password: "",
+        isRemember: false,
+      },
+    };
+  },
+  computed: {
+    ...mapStores(useUserStore),
+  },
   components: {
     InputCompVue,
     ProjectIconCompVue,
   },
   methods: {
-    mm(value) {
-      console.log("신기", value);
-    },
     submitHandler() {
-      console.log("서브밋");
+      // 시작: 로그인 요청 로직
+      // 끝: 로그인 요청 로직
+
+      // 시작: 임시 로그인 기능
+      const tmpJWT =
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6InNzYWZ5IiwibmFtZSI6InNzYWZ5IiwiZXhwIjoxNjgzNzc2NjU0fQ.9slBU-UA8YWWKKYLMh0csjcaaAlYHJ5gVc0gP5OCp-k";
+      const userInfo = jwt_decode(tmpJWT);
+      this.userStore.userInfo.id = userInfo.id;
+      this.userStore.userInfo.name = userInfo.name;
+      // 끝: 임시 로그인 기능
+
+      // 시작: 로그인 유지
+      if (this.user.isRemember) {
+        window.localStorage.setItem(
+          "userInfo",
+          JSON.stringify(this.userStore.userInfo)
+        );
+      } else {
+        window.localStorage.removeItem("userID");
+      }
+      // 끝: 로그인 유지
+      this.$router.push({ name: "home" });
+    },
+
+    setName(value) {
+      this.user.id = value;
+    },
+    setPassword(value) {
+      this.user.password = value;
     },
   },
 };

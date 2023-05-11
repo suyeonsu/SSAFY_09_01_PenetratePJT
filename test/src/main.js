@@ -8,7 +8,7 @@ const pinia = createPinia();
 // vue-router
 import router from "./router";
 
-// fontawesome 사용 library
+// fontawesome 사용 libravry
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
 
 // fontawesome config js 파일
