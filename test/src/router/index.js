@@ -6,6 +6,8 @@ import SearchDetailView from "@/views/tour/SearchDetailView.vue";
 import JoinView from "@/views/user/JoinView.vue";
 import LoginView from "@/views/user/LoginView.vue";
 import MyPageView from "@/views/user/MyPageView.vue";
+import HotPlaceListView from "@/views/tour/HotPlaceListView.vue";
+import PlanListView from "@/views/tour/PlanListView.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomeView },
@@ -23,6 +25,16 @@ const routes = [
         path: "search/:id",
         name: "searchDetail",
         component: SearchDetailView,
+      },
+      {
+        path: "hotplace",
+        name: "hotplaceList",
+        component: HotPlaceListView,
+      },
+      {
+        path: "plan",
+        name: "planList",
+        component: PlanListView,
       },
     ],
   },

@@ -6,7 +6,7 @@ export const useUserStore = defineStore("user", {
     userInfo: {
       // 유저 정보
       id: "",
-      name: "노호종",
+      name: "",
     },
     accessToken: "",
   }),
