@@ -14,40 +14,31 @@
 
 <script>
 import PlaceCardCompVue from "@/components/PlaceCardComp.vue";
+import { useTourStore } from "@/store/tourStore";
 
 export default {
   data() {
+    return {};
+  },
+  setup() {
+    const tourStore = useTourStore();
     return {
-      items: [
-        {
-          title: "더미타이틀",
-          subTitle: "부제목",
-          address: "대전광역시 유성구 구암동 610-19번지 화담빌",
-          hearts: 23,
-          stars: 29,
-          imageURL:
-            "https://a.cdn-hotels.com/gdcs/production60/d893/3172bd6f-726c-4561-810f-deec13d17a6e.jpg?impolicy=fcrop&w=800&h=533&q=medium",
-        },
-        {
-          title: "더미타이틀2",
-          subTitle: "부제목2",
-          address: "대전광역시 유성구 구암동 610-19번지 화담빌",
-          hearts: 23,
-          stars: 29,
-          imageURL:
-            "https://a.cdn-hotels.com/gdcs/production60/d893/3172bd6f-726c-4561-810f-deec13d17a6e.jpg?impolicy=fcrop&w=800&h=533&q=medium",
-        },
-        {
-          title: "더미타이틀3",
-          subTitle: "부제목3",
-          address: "대전광역시 유성구 구암동 610-19번지 화담빌",
-          hearts: 23,
-          stars: 29,
-          imageURL:
-            "https://a.cdn-hotels.com/gdcs/production60/d893/3172bd6f-726c-4561-810f-deec13d17a6e.jpg?impolicy=fcrop&w=800&h=533&q=medium",
-        },
-      ],
+      tourStore,
     };
+  },
+  computed: {
+    items() {
+      return this.tourStore.places.map((item) => {
+        return {
+          title: item.title,
+          subTitle: this.tourStore.activeTheme.text,
+          address: item.addr1,
+          hearts: 18,
+          stars: 29,
+          imageURL: item.firstimage,
+        };
+      });
+    },
   },
   components: {
     PlaceCardCompVue,

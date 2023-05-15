@@ -39,6 +39,7 @@ export default {
       imageURL: URL,
     },
   },
+  computed: {},
 };
 </script>
 
