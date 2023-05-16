@@ -20,11 +20,13 @@ const routes = [
         path: "search",
         name: "searchList",
         component: SearchListView,
-      },
-      {
-        path: "search/:id",
-        name: "searchDetail",
-        component: SearchDetailView,
+        children: [
+          {
+            path: ":id",
+            name: "searchDetail",
+            component: SearchDetailView,
+          },
+        ],
       },
       {
         path: "hotplace",

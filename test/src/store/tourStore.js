@@ -1,15 +1,23 @@
 import { defineStore } from "pinia";
-import { ref } from "vue";
+import { inject, markRaw, ref } from "vue";
 import axios from "axios";
+import router from "@/router";
 
 /* global kakao */
 export const useTourStore = defineStore("tour", () => {
   // ====================================================
   // 전역변수영역
+  const SERVICE_KEY =
+    "Ee0EApL3oZ3hp4+Oc13AHLXzxi8eCyupR6C1Od3o12ybTMrN/3PuLRSVWpaAoNkZtosEJERnAV+CmhPyo8d5Jw==";
   const map = ref(null); // 지도 객체
   const places = ref([]); // 장소 정보
   const markers = ref([]); // 장소에 따른 마커
   const activeTheme = ref({}); // 활성화 된 테마
+  const activePlace = ref(""); // 활성화 된 장소
+  const hideDetail = ref(true); // 상세 페이지 숨기기
+  const detailPlace = ref({}); // 상세 페이지 요소
+
+  const router = inject("router"); // router 사용.
   // ====================================================
 
   // ====================================================
@@ -35,6 +43,8 @@ export const useTourStore = defineStore("tour", () => {
     map.value.setMaxLevel(11); // 최소 축소 한계
     const zoomControl = new kakao.maps.ZoomControl();
     map.value.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+    hideDetail.value = true;
   }
   // 끝 - 초기 세팅
   // ====================================================
@@ -54,12 +64,34 @@ export const useTourStore = defineStore("tour", () => {
       }
       places.value = [];
       markers.value = [];
+      deactivatePlace();
+      hideDetail.value = true;
 
       return await getPlaceInfo(map.value.getCenter(), map.value.getBounds());
     }
     return null;
   }
   // 끝 - 테마 변경
+  // ====================================================
+
+  // ====================================================
+  // 시작 - 장소 자세히보기
+  function activatePlace(id) {
+    activePlace.value = id;
+    hideDetail.value = false;
+  }
+  function deactivatePlace() {
+    activePlace.value = "";
+    hideDetail.value = true;
+  }
+  function toggleHideDetail() {
+    if (activePlace.value) {
+      hideDetail.value = !hideDetail.value;
+    } else {
+      hideDetail.value = true;
+    }
+  }
+  // 끝 - 장소 자세히보기
   // ====================================================
 
   // ====================================================
@@ -154,8 +186,7 @@ export const useTourStore = defineStore("tour", () => {
       _type: "json",
       pageNo: 1,
       numOfRows: 10,
-      serviceKey:
-        "Ee0EApL3oZ3hp4+Oc13AHLXzxi8eCyupR6C1Od3o12ybTMrN/3PuLRSVWpaAoNkZtosEJERnAV+CmhPyo8d5Jw==",
+      serviceKey: SERVICE_KEY,
     };
     const params = new URLSearchParams(parameters);
     const queryString = params.toString();
@@ -183,19 +214,54 @@ export const useTourStore = defineStore("tour", () => {
     const imageSrc = require(`@/assets/image/tour/${activeTheme.value.image}.png`);
     const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
 
-    console.log("마커이미지", markerImage);
     // 마커 객체 생성
     for (let now of nextPlaces) {
       console.log(now);
       const position = new kakao.maps.LatLng(now.mapy, now.mapx);
-      const marker = new kakao.maps.Marker({ position, image: markerImage });
+      // const marker = new kakao.maps.Marker({ position, image: markerImage }); // 커스텀 마커
+      const marker = new kakao.maps.Marker({ position, clickable: true });
+      // clickable: 마커 클릭이벤트용 옵션
       markers.value.push(marker);
       marker.setMap(map.value);
-      console.log(marker);
+      // 마커 클릭이벤트 등록
+      kakao.maps.event.addListener(marker, "click", function () {
+        goToDetail(now.contentid);
+      });
     }
   }
 
   // 끝 - 마커 생성하기
+  // ====================================================
+  // ====================================================
+  // 시작 - 디테일 정보 가져오기
+  async function getDetail(id) {
+    const parameters = {
+      MobileOS: "WIN",
+      MobileApp: "EnjoyTrip",
+      contentId: id,
+      _type: "json",
+      serviceKey: SERVICE_KEY,
+      defaultYN: "Y",
+      firstImageYN: "Y",
+      areacodeYN: "Y",
+      addrinfoYN: "Y",
+      mapinfoYN: "Y",
+      overviewYN: "Y",
+    };
+    const params = new URLSearchParams(parameters);
+    const queryString = params.toString();
+    const url = `https://apis.data.go.kr/B551011/KorService1/detailCommon1?${queryString}`;
+    console.log(url);
+    const res = await axios.get(url);
+    console.log("결과물:", res.data.response.body.items.item[0]);
+    detailPlace.value = res.data.response.body.items.item[0];
+  }
+  async function goToDetail(id) {
+    activatePlace(id);
+    await getDetail(id);
+    router.push({ name: "searchDetail", params: { id } });
+  }
+  // 끝 - 디테일 정보 가져오기
   // ====================================================
   return {
     initMap,
@@ -206,5 +272,13 @@ export const useTourStore = defineStore("tour", () => {
     places,
     markers,
     getPlaceInfo,
+    activePlace,
+    activatePlace,
+    deactivatePlace,
+    hideDetail,
+    toggleHideDetail,
+    getDetail,
+    detailPlace,
+    goToDetail,
   };
 });

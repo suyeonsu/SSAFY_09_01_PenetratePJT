@@ -44,7 +44,9 @@
         </ul>
 
         <div :class="{ list: true, hidden }">
-          <div class="opener" @click="toggleSideBar"></div>
+          <div
+            :class="{ opener: true, detail: !tourStore.hideDetail }"
+            @click="toggleSideBar"></div>
           <router-view></router-view>
         </div>
       </div>
@@ -91,7 +93,7 @@ export default {
           text: "쇼핑",
         },
       ],
-      hidden: true, // 나중에 true로 바꿔주기
+      hidden: false, // 나중에 true로 바꿔주기
     };
   },
   setup() {
@@ -144,6 +146,7 @@ export default {
     toggleSideBar() {
       // 왼쪽 사이드 바 토글기능
       this.hidden = !this.hidden;
+      this.tourStore.toggleHideDetail();
     },
   },
 };
@@ -177,7 +180,7 @@ export default {
       display: flex;
       justify-content: space-between;
       flex-direction: column;
-      z-index: 3;
+      z-index: 11;
       border-top: 1px solid lightgrey;
       border-right: 1px solid lightgray;
       a {
@@ -211,10 +214,9 @@ export default {
     .list {
       position: absolute;
       left: 70px;
-      width: 25vw;
+      width: $side-bar-width;
       height: 100%;
       transition: 0.5s;
-      z-index: 2;
       &.hidden {
         transform: translateX(-100%);
         z-index: -1;
@@ -226,9 +228,13 @@ export default {
         background-color: pink;
         position: absolute;
         top: 50%;
-        right: 0;
-        transform: translate(100%, -50%);
+        left: $side-bar-width;
+        transform: translateY(-50%);
+        transition: 0.2s;
         cursor: pointer;
+        &.detail {
+          left: $side-bar-width * 2;
+        }
       }
     }
   }

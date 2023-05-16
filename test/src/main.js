@@ -1,12 +1,12 @@
 import { createApp } from "vue";
 import App from "./App.vue";
 
+// vue-router
+import router from "./router";
+
 // pinia
 import { createPinia } from "pinia";
 const pinia = createPinia();
-
-// vue-router
-import router from "./router";
 
 // fontawesome 사용 libravry
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";
@@ -16,6 +16,7 @@ import "@/fontAwesome";
 
 createApp(App)
   .component("font-awesome-icon", FontAwesomeIcon)
+  .provide("router", router) // pinia에서 router 사용하기 위함
   .use(pinia)
   .use(router)
   .mount("#app");

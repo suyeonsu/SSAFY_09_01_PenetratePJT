@@ -1,14 +1,18 @@
 <template>
-  <div class="sidebar">
+  <div class="container">
     <form class="search">
       <label class="searchLabel">
         <input type="text" class="searchInput" />
         <font-awesome-icon class="icon" :icon="['fas', 'magnifying-glass']" />
       </label>
     </form>
+    <div>최신순 | 인기순</div>
     <ul class="list">
       <PlaceCardCompVue v-for="item in items" :key="item.title" :item="item" />
     </ul>
+    <div :class="{ 'detail-container': true, hidden: tourStore.hideDetail }">
+      <router-view></router-view>
+    </div>
   </div>
 </template>
 
@@ -30,6 +34,7 @@ export default {
     items() {
       return this.tourStore.places.map((item) => {
         return {
+          id: item.contentid,
           title: item.title,
           subTitle: this.tourStore.activeTheme.text,
           address: item.addr1,
@@ -47,13 +52,13 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.sidebar {
+.container {
   // 사이드바 전체
   background-color: white; // 임시
   width: 100%;
   height: 100%;
   box-sizing: border-box;
-  border-top: 1px solid lightgrey;
+  position: relative;
   .search {
     // 검색창
     padding: 1rem;
@@ -88,6 +93,18 @@ export default {
     &::-webkit-scrollbar-thumb {
       background-color: $primary;
       border-radius: 2px;
+    }
+  }
+  .detail-container {
+    position: absolute;
+    width: 100%;
+    height: 90vh;
+    top: 0;
+    left: 100%;
+    transition: 0.2s;
+    z-index: -1;
+    &.hidden {
+      left: 0;
     }
   }
 }

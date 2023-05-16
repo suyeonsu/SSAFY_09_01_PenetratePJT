@@ -4,7 +4,9 @@
       <img :src="item.imageURL" alt="이미지" />
     </div>
     <div class="contents">
-      <h3>{{ item.title }}</h3>
+      <h3 @click="goToDetail">
+        {{ item.title }}
+      </h3>
       <h4>{{ item.subTitle }}</h4>
       <address>
         <div>{{ item.address }}</div>
@@ -28,9 +30,11 @@
 </template>
 
 <script>
+import { useTourStore } from "@/store/tourStore";
 export default {
   props: {
     item: {
+      id: String,
       title: String,
       subTitle: String,
       address: String,
@@ -39,7 +43,17 @@ export default {
       imageURL: URL,
     },
   },
-  computed: {},
+  setup() {
+    const tourStore = useTourStore();
+    return {
+      tourStore,
+    };
+  },
+  methods: {
+    goToDetail() {
+      this.tourStore.goToDetail(this.item.id);
+    },
+  },
 };
 </script>
 
