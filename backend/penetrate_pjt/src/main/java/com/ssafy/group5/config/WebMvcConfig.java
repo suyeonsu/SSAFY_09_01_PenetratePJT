@@ -7,7 +7,7 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import com.ssafy.group5.interceptor.SessionConfirmInterceptor;
+import com.ssafy.group5.interceptor.LoginInterceptor;
 
 
 @Configuration // 설정파일 bean 등록
@@ -16,13 +16,13 @@ import com.ssafy.group5.interceptor.SessionConfirmInterceptor;
 public class WebMvcConfig implements WebMvcConfigurer {
 	
 	@Autowired
-	SessionConfirmInterceptor sessionConfirmInterceptor;
+	LoginInterceptor loginInterceptor;
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
 		// TODO Auto-generated method stub
 		
-		registry.addInterceptor(sessionConfirmInterceptor)
+		registry.addInterceptor(loginInterceptor)
 		.addPathPatterns("/group5/**"); // 접근제어 필요한 url
 	}
 	

@@ -21,7 +21,12 @@ public interface AttractionService {
 	/**
 	 * 지역별 관광지 목록 조회
 	 */
-	List<Attraction> selectBySidoGugun(Map<String, Integer> code) throws SQLException;
+	List<Attraction> selectBySidoGugun(Map<String, ?> code) throws SQLException;
+	
+	/**
+	 * 키워드에 해당하는 관광지 목록 조회
+	 */
+	List<Attraction> selectByKeyword(Map<String, Object> keywords) throws SQLException;
 	
 	/**
 	 * 관광지 상세 조회

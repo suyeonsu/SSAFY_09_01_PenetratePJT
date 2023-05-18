@@ -4,6 +4,7 @@
     
 <mapper namespace="com.ssafy.group5.model.mapper.UserMapper">
 
+<<<<<<< HEAD
 	<select id="login" parameterType="User" resultType="User">
 		select id, name, email from user where id=#{id} and pw=#{pw}
 	</select>
@@ -12,4 +13,38 @@
 		insert into user (id, pw, name, email) values(#{id}, #{pw}, #{name}, #{email})
 	</insert>
 
+=======
+	<resultMap type="User" id="UserMap">
+		<id column="profile_image_url" property="profileImageUrl"/>
+	</resultMap>
+
+	<!-- 로그인 -->
+	<select id="login" parameterType="User" resultMap="UserMap">
+		select *
+		from user
+		where id=#{id} and password=#{password}
+	</select>
+	
+	<!-- 회원가입 -->
+	<insert id="signUp" parameterType="Map">
+		insert into user
+		values (#{id}, #{password}, #{name}, #{profileImageUrl})
+	</insert>
+	
+	
+	<!-- 회원 정보 수정 -->
+	<update id="updateUserInfo" parameterType="User">
+		update user 
+		set password=#{password}, name=#{name}, profile_image_url=#{profileImageUrl}
+		where id=#{id}
+	</update>
+	
+
+	<!-- 회원 정보 삭제 (회원 탈퇴) -->
+	<delete id="deleteUser" parameterType="User">
+		delete from user
+		where id=#{id} and password=#{password}
+	</delete>
+	
+>>>>>>> debeea6a0411b3bc2e8435947f7a53121eb2824b
 </mapper>

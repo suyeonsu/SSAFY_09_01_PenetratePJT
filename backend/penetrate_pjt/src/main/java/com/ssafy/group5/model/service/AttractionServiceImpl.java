@@ -27,14 +27,18 @@ public class AttractionServiceImpl implements AttractionService {
 	}
 	
 	@Override
-	public List<Attraction> selectBySidoGugun(Map<String, Integer> code) throws SQLException {
+	public List<Attraction> selectBySidoGugun(Map<String, ?> code) throws SQLException {
 		return attractionMapper.selectBySidoGugun(code);
+	}
+
+	@Override
+	public List<Attraction> selectByKeyword(Map<String, Object> keywords) throws SQLException {
+		return attractionMapper.selectByKeyword(keywords);
 	}
 
 	@Override
 	public Attraction selectById(int contentId) throws SQLException {
 		return attractionMapper.selectById(contentId);
 	}
-
 
 }

@@ -1,5 +1,6 @@
 package com.ssafy.group5.model.service;
 
+<<<<<<< HEAD
 import java.sql.SQLException;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,4 +34,32 @@ public class UserService {
 //		User user2 = new User("haribo","haribo","김하리보","haribo@naver.com");
 //		join(user2);
 	}
+=======
+import java.util.Map;
+
+import com.ssafy.group5.dto.User;
+
+public interface UserService {
+	
+	/**
+	 * 로그인
+	 */
+	User login(User user);
+	
+	/**
+	 * 회원가입
+	 */
+	void signUp(Map<String, ?> user);
+	
+	/**
+	 * 회원 정보 수정 
+	 */
+	void updateUserInfo(User user);
+	
+	/**
+	 * 회원 정보 삭제 
+	 */
+	void deleteUser(User user);
+	
+>>>>>>> debeea6a0411b3bc2e8435947f7a53121eb2824b
 }
