@@ -101,7 +101,7 @@ export default {
       display: flex;
       justify-content: space-between;
       .my-place {
-        font-size: 1.3rem;
+        font-size: 1rem;
       }
       h3 {
         // 아이템 제목
