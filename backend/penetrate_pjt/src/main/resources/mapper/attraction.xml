@@ -33,18 +33,6 @@
 		where sido_code=#{sido} and gugun_code=#{gugun}
 	</select>
 
-	<!-- 키워드에 일치하는 관광지 조회 -->
-	<select id="selectByKeyword" parameterType="Map" resultMap="AttractionMap">
-		select *
-		from attraction
-		<if test="keywords.length>0">
-			where 
-			<foreach separator=" and " item="keyword" collection="keywords">		
-				title like concat('%', #{keyword}, '%') or overview like concat('%', #{keyword}, '%')
-			</foreach>
-		</if>
-	</select>
-
 	<!-- 관광지 상세 조회 -->
 	<select id="selectById" parameterType="Integer" resultMap="AttractionMap">
 		select *

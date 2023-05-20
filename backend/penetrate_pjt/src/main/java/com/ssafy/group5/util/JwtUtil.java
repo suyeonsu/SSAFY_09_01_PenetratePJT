@@ -5,7 +5,7 @@ import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
-import com.ssafy.group5.dto.Member;
+import com.ssafy.group5.dto.User;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -27,7 +27,7 @@ public class JwtUtil {
 			return false;
 		}
 }
-	public String createToken(Member user, int expirationSecond) throws UnsupportedEncodingException {
+	public String createToken(User user, int expirationSecond) throws UnsupportedEncodingException {
 
 		String token = Jwts.builder()
 				//header 

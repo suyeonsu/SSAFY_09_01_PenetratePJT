@@ -1,9 +1,9 @@
 package com.ssafy.group5.model.service;
 
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.ibatis.session.SqlSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,39 +14,39 @@ import com.ssafy.group5.model.mapper.MemberMapper;
 public class MemberServiceImpl implements MemberService {
 
 	@Autowired
-	private SqlSession sqlSession;
+	private MemberMapper memberMapper;
 
 	@Override
-	public Member login(Member member) throws Exception {
+	public Member login(Member member) throws SQLException {
 		if (member.getUserid() == null || member.getUserpwd() == null)
 			return null;
-		return sqlSession.getMapper(MemberMapper.class).login(member);
+		return memberMapper.login(member);
 	}
 
 	@Override
-	public Member userInfo(String userid) throws Exception {
-		return sqlSession.getMapper(MemberMapper.class).userInfo(userid);
+	public Member userInfo(String userid) throws SQLException {
+		return memberMapper.userInfo(userid);
 	}
 
 	@Override
-	public void saveRefreshToken(String userid, String refreshToken) throws Exception {
+	public void saveRefreshToken(String userid, String refreshToken) throws SQLException {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("userid", userid);
 		map.put("token", refreshToken);
-		sqlSession.getMapper(MemberMapper.class).saveRefreshToken(map);
+		memberMapper.saveRefreshToken(map);
 	}
 
 	@Override
-	public Object getRefreshToken(String userid) throws Exception {
-		return sqlSession.getMapper(MemberMapper.class).getRefreshToken(userid);
+	public Object getRefreshToken(String userid) throws SQLException {
+		return memberMapper.getRefreshToken(userid);
 	}
 
 	@Override
-	public void deleRefreshToken(String userid) throws Exception {
+	public void deleRefreshToken(String userid) throws SQLException {
 		Map<String, String> map = new HashMap<String, String>();
 		map.put("userid", userid);
 		map.put("token", null);
-		sqlSession.getMapper(MemberMapper.class).deleteRefreshToken(map);
+		memberMapper.deleteRefreshToken(map);
 	}
 
 }

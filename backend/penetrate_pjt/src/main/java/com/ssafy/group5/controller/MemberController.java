@@ -18,25 +18,24 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.group5.dto.Member;
-import com.ssafy.group5.model.service.JwtServiceImpl;
+import com.ssafy.group5.model.service.JwtService;
 import com.ssafy.group5.model.service.MemberService;
 
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/user")
 @Api("사용자 컨트롤러  API V1")
-@Slf4j
 public class MemberController {
 
+	public static final Logger logger = LoggerFactory.getLogger(MemberController.class);
 	private static final String SUCCESS = "success";
 	private static final String FAIL = "fail";
 
 	@Autowired
-	private JwtServiceImpl jwtService;
+	private JwtService jwtService;
 
 	@Autowired
 	private MemberService memberService;
@@ -53,8 +52,8 @@ public class MemberController {
 				String accessToken = jwtService.createAccessToken("userid", loginUser.getUserid());// key, data
 				String refreshToken = jwtService.createRefreshToken("userid", loginUser.getUserid());// key, data
 				memberService.saveRefreshToken(member.getUserid(), refreshToken);
-				log.debug("로그인 accessToken 정보 : {}", accessToken);
-				log.debug("로그인 refreshToken 정보 : {}", refreshToken);
+				logger.debug("로그인 accessToken 정보 : {}", accessToken);
+				logger.debug("로그인 refreshToken 정보 : {}", refreshToken);
 				resultMap.put("access-token", accessToken);
 				resultMap.put("refresh-token", refreshToken);
 				resultMap.put("message", SUCCESS);
@@ -64,7 +63,7 @@ public class MemberController {
 				status = HttpStatus.ACCEPTED;
 			}
 		} catch (Exception e) {
-			log.error("로그인 실패 : {}", e);
+			logger.error("로그인 실패 : {}", e);
 			resultMap.put("message", e.getMessage());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -76,11 +75,11 @@ public class MemberController {
 	public ResponseEntity<Map<String, Object>> getInfo(
 			@PathVariable("userid") @ApiParam(value = "인증할 회원의 아이디.", required = true) String userid,
 			HttpServletRequest request) {
-//		log.debug("userid : {} ", userid);
+//		logger.debug("userid : {} ", userid);
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
 		if (jwtService.checkToken(request.getHeader("access-token"))) {
-			log.info("사용 가능한 토큰!!!");
+			logger.info("사용 가능한 토큰!!!");
 			try {
 //				로그인 사용자 정보.
 				Member member = memberService.userInfo(userid);
@@ -88,12 +87,12 @@ public class MemberController {
 				resultMap.put("message", SUCCESS);
 				status = HttpStatus.ACCEPTED;
 			} catch (Exception e) {
-				log.error("정보조회 실패 : {}", e);
+				logger.error("정보조회 실패 : {}", e);
 				resultMap.put("message", e.getMessage());
 				status = HttpStatus.INTERNAL_SERVER_ERROR;
 			}
 		} else {
-			log.error("사용 불가능 토큰!!!");
+			logger.error("사용 불가능 토큰!!!");
 			resultMap.put("message", FAIL);
 			status = HttpStatus.UNAUTHORIZED;
 		}
@@ -110,7 +109,7 @@ public class MemberController {
 			resultMap.put("message", SUCCESS);
 			status = HttpStatus.ACCEPTED;
 		} catch (Exception e) {
-			log.error("로그아웃 실패 : {}", e);
+			logger.error("로그아웃 실패 : {}", e);
 			resultMap.put("message", e.getMessage());
 			status = HttpStatus.INTERNAL_SERVER_ERROR;
 		}
@@ -125,18 +124,18 @@ public class MemberController {
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = HttpStatus.ACCEPTED;
 		String token = request.getHeader("refresh-token");
-		log.debug("token : {}, member : {}", token, member);
+		logger.debug("token : {}, member : {}", token, member);
 		if (jwtService.checkToken(token)) {
 			if (token.equals(memberService.getRefreshToken(member.getUserid()))) {
 				String accessToken = jwtService.createAccessToken("userid", member.getUserid());
-				log.debug("token : {}", accessToken);
-				log.debug("정상적으로 액세스토큰 재발급!!!");
+				logger.debug("token : {}", accessToken);
+				logger.debug("정상적으로 액세스토큰 재발급!!!");
 				resultMap.put("access-token", accessToken);
 				resultMap.put("message", SUCCESS);
 				status = HttpStatus.ACCEPTED;
 			}
 		} else {
-			log.debug("리프레쉬토큰도 사용불!!!!!!!");
+			logger.debug("리프레쉬토큰도 사용불!!!!!!!");
 			status = HttpStatus.UNAUTHORIZED;
 		}
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
