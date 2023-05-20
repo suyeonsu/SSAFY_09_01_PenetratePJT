@@ -70,7 +70,6 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	@Transactional
 	public boolean deleteArticle(int articleno) throws Exception {
-		boardMapper.deleteMemo(articleno);
 		return boardMapper.deleteArticle(articleno) == 1;
 	}
 }

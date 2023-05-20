@@ -10,11 +10,14 @@ import org.springframework.stereotype.Service;
 import com.ssafy.group5.dto.Attraction;
 import com.ssafy.group5.model.mapper.AttractionMapper;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Service
 public class AttractionServiceImpl implements AttractionService {
 
 	@Autowired
 	private AttractionMapper attractionMapper;
+	
 	
 	@Override
 	public List<Attraction> selectAll() throws SQLException {

@@ -7,6 +7,7 @@ import com.ssafy.group5.dto.BoardParameter;
 import com.ssafy.group5.util.PageNavigation;
 
 public interface BoardService {
+	
 	public boolean writeArticle(Board boardDto) throws Exception;
 	public List<Board> listArticle(BoardParameter boardParameterDto) throws Exception;
 	public PageNavigation makePageNavigation(BoardParameter boardParameterDto) throws Exception;
