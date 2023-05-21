@@ -1,13 +1,15 @@
 package com.ssafy.group5.model.mapper;
 
+import java.util.Map;
+
 import com.ssafy.group5.dto.User;
 
 public interface UserMapper {
 	
 	/**
-	 * 로그인
+	 * 유저 정보 반환
 	 */
-	User login(User user);
+	User getUser(User user);
 	
 	/**
 	 * 회원가입
@@ -17,7 +19,7 @@ public interface UserMapper {
 	/**
 	 * 회원 정보 수정 
 	 */
-	void updateUserInfo(User user);
+	void updateUserInfo(Map<String, ?> param);
 	
 	/**
 	 * 회원 정보 삭제 (회원 탈퇴)

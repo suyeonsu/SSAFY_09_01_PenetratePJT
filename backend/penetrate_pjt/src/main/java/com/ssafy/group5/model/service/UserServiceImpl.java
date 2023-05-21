@@ -1,5 +1,7 @@
 package com.ssafy.group5.model.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +13,10 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
-	
+
 	@Override
-	public User login(User user) {
-		return userMapper.login(user);
+	public User getUser(User user) {
+		return userMapper.getUser(user);
 	}
 
 	@Override
@@ -23,8 +25,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUserInfo(User user) {
-		userMapper.updateUserInfo(user);
+	public void updateUserInfo(Map<String, ?> param) {
+		userMapper.updateUserInfo(param);
 	}
 
 	@Override

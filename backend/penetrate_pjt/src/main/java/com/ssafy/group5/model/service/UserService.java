@@ -1,13 +1,15 @@
 package com.ssafy.group5.model.service;
 
+import java.util.Map;
+
 import com.ssafy.group5.dto.User;
 
 public interface UserService {
 	
 	/**
-	 * 로그인
+	 * 유저 정보 반환
 	 */
-	User login(User user);
+	User getUser(User user);
 	
 	/**
 	 * 회원가입
@@ -17,7 +19,7 @@ public interface UserService {
 	/**
 	 * 회원 정보 수정 
 	 */
-	void updateUserInfo(User user);
+	void updateUserInfo(Map<String, ?> param);
 	
 	/**
 	 * 회원 정보 삭제 

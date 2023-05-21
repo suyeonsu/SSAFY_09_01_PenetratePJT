@@ -8,8 +8,10 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,8 +32,8 @@ public class AuthController {
 	private JwtUtil jwtUtil;
 	
 	@PostMapping("/login")
-	public ResponseEntity<?> login( @RequestBody User user) throws SQLException, UnsupportedEncodingException{
-		User userInfo = userService.login(user);
+	public ResponseEntity<?> login(@RequestBody User user) throws SQLException, UnsupportedEncodingException{
+		User userInfo = userService.getUser(user);
 		if(userInfo!=null) {
 			String token = jwtUtil.createToken(userInfo, 60*60*24*365);
 			
@@ -43,22 +45,23 @@ public class AuthController {
 		else return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
-	@GetMapping("/logout")
-	public void logout() {
+	@GetMapping
+	public ResponseEntity<?> getUserInfo(@RequestBody User user) throws SQLException {
+		return new ResponseEntity<User>(userService.getUser(user), HttpStatus.OK);
 	}
 	
-	@PostMapping
+	@PostMapping("/signup")
 	public void signUp(@RequestBody User user) {
 		userService.signUp(user);
 	}
 	
-	@PostMapping("/update")
-	public void updateProfile(@RequestParam User user) {
-		userService.updateUserInfo(user);
+	@PutMapping
+	public void updateProfile(@RequestBody Map<String, ?> param) {
+		userService.updateUserInfo(param);
 	}
 	
-	@PostMapping("/del")
-	public void withdrawal(@RequestParam User user) {
+	@DeleteMapping
+	public void withdrawal(@RequestBody User user) {
 		userService.deleteUser(user);
 	}
 }
