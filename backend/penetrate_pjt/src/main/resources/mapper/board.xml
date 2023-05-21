@@ -11,23 +11,22 @@
 	
 	
 	<select id="listArticle" parameterType="map" resultType="board">
-	  SELECT articleno, userid, subject, content, hit,
-	         CASE WHEN DATE_FORMAT(regtime, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
-	              THEN DATE_FORMAT(regtime, '%H:%i:%s')
-	              ELSE DATE_FORMAT(regtime, '%y.%m.%d')
-	         END regtime
+	  SELECT articleno, userid, subject, content, hit, regtime
 	  FROM board
 	  <where> 
 	    <if test="filter != null and filter != ''">
 	      <choose>
+	      	<!-- 작성자 -->
 	        <when test="filter == 'userid'">
-	          userid = #{keyword}
+	          userid like concat('%', #{keyword}, '%')
 	        </when>
+	      	<!-- 제목 -->
 	        <when test="filter == 'subject'">
-	          subject = #{keyword}
+	          subject like concat('%', #{keyword}, '%')
 	        </when>
+	      	<!-- 제목+내용 -->
 	        <when test="filter == 'content'">
-	          content = #{keyword}
+	          subject like concat('%', #{keyword}, '%') or content like concat('%', #{keyword}, '%')
 	        </when>
 	        <!-- 필터 값이 지정된 것과 일치하지 않을 때 처리할 내용을 추가할 수 있습니다. -->
 	        <otherwise>
@@ -38,14 +37,17 @@
 	  </where>
 	  <if test="sort != null and sort != ''">
 	  	<choose>
+	      	<!-- 조회수순 -->
 	  		<when test="sort == 'hit'">
 	  			order by hit desc, regtime desc
 	  		</when>
+	      	<!-- 최신순 -->
 	  		<otherwise>
 	  			order by regtime desc
 	  		</otherwise>
 	  	</choose>
 	  </if>
+	  <!-- 한 페이지 당 10개씩 -->
 	  <if test="no != null">
 	    LIMIT #{no}, 10
 	  </if>
