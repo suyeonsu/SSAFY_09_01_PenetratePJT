@@ -9,24 +9,48 @@
 		values (#{userid}, #{subject}, #{content}, 0, now())
 	</insert>
 	
+	
 	<select id="listArticle" parameterType="map" resultType="board">
-		select articleno, userid, subject, content, hit,
-				case when date_format(regtime, '%Y%m%d') = date_format(now(), '%Y%m%d')
-				then date_format(regtime, '%H:%i:%s')
-				else date_format(regtime, '%y.%m.%d')
-				end regtime
-		from board
-		<if test="word != null and word != ''">
-			<if test="key == 'subject'">
-				where subject like concat('%', #{word}, '%')
-			</if>
-			<if test="key != 'subject'">
-				where ${key} = #{word}
-			</if>
-		</if>
-		order by articleno desc
-		limit #{start}, #{spp}
+	  SELECT articleno, userid, subject, content, hit,
+	         CASE WHEN DATE_FORMAT(regtime, '%Y%m%d') = DATE_FORMAT(NOW(), '%Y%m%d')
+	              THEN DATE_FORMAT(regtime, '%H:%i:%s')
+	              ELSE DATE_FORMAT(regtime, '%y.%m.%d')
+	         END regtime
+	  FROM board
+	  <where> 
+	    <if test="filter != null and filter != ''">
+	      <choose>
+	        <when test="filter == 'userid'">
+	          userid = #{keyword}
+	        </when>
+	        <when test="filter == 'subject'">
+	          subject = #{keyword}
+	        </when>
+	        <when test="filter == 'content'">
+	          content = #{keyword}
+	        </when>
+	        <!-- 필터 값이 지정된 것과 일치하지 않을 때 처리할 내용을 추가할 수 있습니다. -->
+	        <otherwise>
+	          <!-- 예: 아무 동작을 하지 않거나 기본적인 필터 동작을 수행합니다. -->
+	        </otherwise>
+	      </choose>
+	    </if>
+	  </where>
+	  <if test="sort != null and sort != ''">
+	  	<choose>
+	  		<when test="sort == 'hit'">
+	  			order by hit desc, regtime desc
+	  		</when>
+	  		<otherwise>
+	  			order by regtime desc
+	  		</otherwise>
+	  	</choose>
+	  </if>
+	  <if test="no != null">
+	    LIMIT #{no}, 10
+	  </if>
 	</select>
+	
 	
 	<select id="getTotalCount" parameterType="map" resultType="int">
 		select count(articleno)

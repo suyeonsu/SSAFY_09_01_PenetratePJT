@@ -1,9 +1,8 @@
 package com.ssafy.group5.controller;
 
 import java.util.List;
+import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.group5.dto.Board;
@@ -49,13 +49,20 @@ public class BoardController {
 		return new ResponseEntity<String>(FAIL, HttpStatus.NO_CONTENT);
 	}
 	
+//	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
+//	@GetMapping
+//	public ResponseEntity<List<Board>> listArticle(BoardParameter boardParameter) throws Exception {
+//		log.info("listArticle - 호출");
+//		PageNavigation pageNavigation = boardService.makePageNavigation(boardParameter);
+//		
+//		return new ResponseEntity<List<Board>>(boardService.listArticle(boardParameter), HttpStatus.OK);
+//	}
+	
 	@ApiOperation(value = "게시판 글목록", notes = "모든 게시글의 정보를 반환한다.", response = List.class)
 	@GetMapping
-	public ResponseEntity<List<Board>> listArticle(@ApiParam(value = "게시글을 얻기위한 부가정보.", required = true) BoardParameter boardParameter) throws Exception {
-		log.info("listArticle - 호출");
-		PageNavigation pageNavigation = boardService.makePageNavigation(boardParameter);
-		
-		return new ResponseEntity<List<Board>>(boardService.listArticle(boardParameter), HttpStatus.OK);
+	public ResponseEntity<List<Board>> listArticle(@RequestBody Map<String, ?> param) throws Exception {
+		log.debug("listArticle에서 전달받은 파라미터 : {}", param);
+		return new ResponseEntity<List<Board>>(boardService.listArticle(param), HttpStatus.OK);
 	}
 	
 	@ApiOperation(value = "게시판 글보기", notes = "글번호에 해당하는 게시글의 정보를 반환한다.", response = Board.class)

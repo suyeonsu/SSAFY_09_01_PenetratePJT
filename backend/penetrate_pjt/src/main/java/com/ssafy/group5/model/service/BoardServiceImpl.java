@@ -1,6 +1,7 @@
 package com.ssafy.group5.model.service;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,10 +28,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<Board> listArticle(BoardParameter boardParameter) throws Exception {
-		int start = boardParameter.getPg() == 0 ? 0 : (boardParameter.getPg() - 1) * boardParameter.getSpp();
-		boardParameter.setStart(start);
-		return boardMapper.listArticle(boardParameter);
+	public List<Board> listArticle(Map<String, ?> param) throws Exception {
+//		int start = boardParameter.getPg() == 0 ? 0 : (boardParameter.getPg() - 1) * boardParameter.getSpp();
+//		boardParameter.setStart(start);
+//		return boardMapper.listArticle(boardParameter);
+		
+		return boardMapper.listArticle(param);
 	}
 
 	@Override
