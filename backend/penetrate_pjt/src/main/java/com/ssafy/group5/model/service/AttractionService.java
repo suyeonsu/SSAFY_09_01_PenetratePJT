@@ -9,28 +9,13 @@ import com.ssafy.group5.dto.Attraction;
 public interface AttractionService {
 
 	/**
-	 * 관광지 전체 목록 조회
+	 * 관광지 목록 조회
 	 */
-	List<Attraction> selectAll() throws SQLException;
+	List<Attraction> getAttractionList(Map<String, ?> param) throws SQLException;
 
-	/**
-	 * 관광지 테마별 목록 조회
-	 */
-	List<Attraction> selectByType(int contentTypeId) throws SQLException;
-	
-	/**
-	 * 지역별 관광지 목록 조회
-	 */
-	List<Attraction> selectBySidoGugun(Map<String, ?> code) throws SQLException;
-	
-	/**
-	 * 키워드에 해당하는 관광지 목록 조회
-	 */
-	List<Attraction> selectByKeyword(Map<String, Object> keywords) throws SQLException;
-	
 	/**
 	 * 관광지 상세 조회
 	 */
-	Attraction selectById(int contentId) throws SQLException;
+	Attraction getAttractionDetail(int contentId) throws SQLException;
 
 }

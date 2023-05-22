@@ -19,4 +19,10 @@ public class Attraction {
 	private double latitude;
 	private double longitude;
 	private String overview;
+	private int star1;
+	private int star2;
+	private int star3;
+	private int star4;
+	private int star5;
+	private double totalScore;
 }
