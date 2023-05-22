@@ -4,7 +4,7 @@ import lombok.Data;
 
 @Data
 public class Rating {
-	private int contentId;
+	private int attractionId;
 	private int star1;
 	private int star2;
 	private int star3;

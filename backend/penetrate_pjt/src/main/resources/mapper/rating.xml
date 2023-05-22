@@ -4,40 +4,38 @@
     
 <mapper namespace="com.ssafy.group5.model.mapper.RatingMapper">
 
-	<resultMap type="Rating" id="RatingMap">
-		<id column="content_id" property="contentId"/>
+	<resultMap type="UserRating" id="UserRatingMap">
+		<id column="user_id" property="userId"/>
+		<id column="attraction_id" property="attractionId"/>
 	</resultMap>
 
-	<select id="selectAll" resultMap="RatingMap">
-		select r.content_id, star1, star2, star3, star4, star5
-		from rating r left join attraction a on r.content_id = a.content_id
+	<select id="getUserRating" parameterType="UserRating" resultMap="UserRatingMap">
+		select user_id, attraction_id, star
+		from user_rating
+		where user_id=#{userId} and attraction_id=#{attractionId}
 	</select>
 	
-	<select id="selectBySidoGugun" parameterType="Map" resultMap="RatingMap">
-		select r.content_id, star1, star2, star3, star4, star5
-		from rating r left join attraction a on r.content_id = a.content_id
-		where sido_code=#{sido} and gugun_code=#{gugun}
-	</select>
+	<update id="decrementStar" parameterType="Map">
+		update rating
+		set star${col} = star${col}-1
+		where attraction_id=#{attractionId}
+	</update>
 	
-	<select id="selectByType" parameterType="int" resultMap="RatingMap">
-		select r.content_id, star1, star2, star3, star4, star5
-		from rating r join attraction a on r.content_id = a.content_id
-		where content_type_id=#{contentTypeId}
-	</select>
+	<update id="incrementStar" parameterType="Map">
+		update rating
+		set star${col} = star${col}+1
+		where attraction_id=#{attractionId}
+	</update>
 	
-	<select id="selectByStar" parameterType="int" resultMap="RatingMap">
-		select r.content_id, star1, star2, star3, star4, star5
-		from (select *, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) rate
-			from rating) r
-			left join attraction a 
-			on r.content_id = a.content_id
-		where r.rate >= #{val}
-	</select>
+	<update id="updateUserRating" parameterType="UserRating">
+		update user_rating
+		set star=#{star}
+		where user_id=#{userId} and attraction_id=#{attractionId}
+	</update>
 	
-	<select id="selectById" parameterType="int" resultMap="RatingMap">
-		select r.content_id, star1, star2, star3, star4, star5
-		from rating r join attraction a on r.content_id = a.content_id
-		where r.content_id=#{contentId}
-	</select>
+	<insert id="insertUserRating" parameterType="UserRating">
+		insert into user_rating (user_id, attraction_id, star)
+		values (#{userId}, #{attractionId}, #{star})
+	</insert>
 	
 </mapper>
