@@ -1,7 +1,7 @@
 <template>
   <router-link class="logo" to="/">
     <font-awesome-icon class="icon" :icon="['fas', 'plane-departure']" />
-    <span> MyTrip </span>
+    <span> Let's Travel </span>
   </router-link>
 </template>
 

@@ -13,7 +13,6 @@
         </label>
         <button class="main-button">로그인</button>
         <div class="sub-menu">
-          <div class="item">아이디 찾기</div>
           <div class="item">비밀번호 찾기</div>
           <router-link class="item" :to="{ name: 'join' }"
             >회원 가입</router-link

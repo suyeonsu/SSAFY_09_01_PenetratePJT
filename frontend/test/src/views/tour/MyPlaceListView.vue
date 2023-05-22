@@ -27,7 +27,7 @@
           </option>
         </select>
       </div>
-      <div class="sort">거리순 | 인기순 | 별점순</div>
+      <div class="sort">거리순 | 등록순</div>
     </div>
     <ul class="list">
       <PlaceCardCompVue v-for="item in items" :key="item.title" :item="item" />

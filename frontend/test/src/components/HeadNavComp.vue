@@ -4,19 +4,20 @@
     <nav>
       <router-link :to="{ name: 'home' }">홈</router-link>
       <router-link :to="{ name: 'searchList' }">여행지</router-link>
+      <router-link :to="{ name: 'freeBoardList', params: { pageNo: 1 } }"
+        >자유게시판</router-link
+      >
       <template v-if="userStore.userInfo.id">
         <router-link
-          :to="{ name: 'mypage', params: { id: userStore.userInfo.id } }">
-          {{ userStore.userInfo.id }}{{ `(${userStore.userInfo.name})` }}
+          :to="{ name: 'userpage', params: { id: userStore.userInfo.id } }">
+          {{ userStore.userInfo.name
+          }}{{ `(${userStore.userInfo.id})님 환영합니다` }}
         </router-link>
         <ButtonComp @click="logout">로그아웃</ButtonComp>
       </template>
       <template v-else>
         <router-link :to="{ name: 'login' }">
-          <ButtonComp>로그인</ButtonComp>
-        </router-link>
-        <router-link :to="{ name: 'join' }">
-          <ButtonComp :fill="true">회원가입</ButtonComp>
+          <ButtonComp :fill="true">로그인</ButtonComp>
         </router-link>
       </template>
     </nav>

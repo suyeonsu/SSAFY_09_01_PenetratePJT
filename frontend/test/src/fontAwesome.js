@@ -11,6 +11,7 @@ import {
   faX,
   faPencil,
   faStar as fasStar,
+  faFontAwesome,
 } from "@fortawesome/free-solid-svg-icons";
 import { faStar, faHeart } from "@fortawesome/free-regular-svg-icons";
 
@@ -24,5 +25,6 @@ library.add(
   faChevronLeft,
   faX,
   faPencil,
-  fasStar
+  fasStar,
+  faFontAwesome
 );

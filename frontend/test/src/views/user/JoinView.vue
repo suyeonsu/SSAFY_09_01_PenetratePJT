@@ -9,12 +9,9 @@
           :errorMsg="duplicateError"
           >아이디</InputCompVue
         >
-        <!-- <div class="inspection">
-          아이디 중복 여부:
-          <span :class="{ red: duplicate, green: !duplicate }">
-            {{ duplicateMessage }}
-          </span>
-        </div> -->
+        <InputCompVue type="email" required @changeValue="setEmail"
+          >이메일</InputCompVue
+        >
         <InputCompVue required @changeValue="setUserName">이름</InputCompVue>
         <InputCompVue type="password" required @changeValue="setUserPassword"
           >비밀번호</InputCompVue
@@ -26,13 +23,6 @@
           :errorMsg="samePasswordError"
           >비밀번호 확인</InputCompVue
         >
-        <!-- <div class="inspection">
-          비밀번호 중복 여부:
-          <span :class="{ red: !samePassword, green: samePassword }">
-            {{ samePasswordMessage }}
-          </span>
-        </div> -->
-
         <button :disabled="isError" class="button">회원 가입</button>
       </form>
     </div>
@@ -53,6 +43,7 @@ export default {
       samePasswordError: "",
       user: {
         id: "",
+        email: "",
         name: "",
         password: "",
       },
@@ -79,6 +70,9 @@ export default {
     },
     setUserName(data) {
       this.user.name = data;
+    },
+    setEmail(data) {
+      this.user.email = data;
     },
     setUserPassword(data) {
       this.user.password = data;

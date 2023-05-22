@@ -25,7 +25,7 @@ $now: $primary;
   color: $now;
   font-size: 1rem;
   font-weight: bold;
-  border-radius: 10px;
+  // border-radius: 10px;
   transition: 0.5s;
   cursor: pointer;
   &:hover,

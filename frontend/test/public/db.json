@@ -1,0 +1,36 @@
+{
+  "postList": [
+    {
+      "articleno": 123,
+      "userid": "유저아이디1",
+      "subject": "제목1",
+      "hit": "281",
+      "regtime": "2023-05-19T10:30:00Z",
+      "content": null
+    },
+    {
+      "articleno": 125,
+      "userid": "유저아이디2",
+      "subject": "제목2",
+      "hit": "282",
+      "regtime": "2023-05-19T10:30:00Z",
+      "content": null
+    },
+    {
+      "articleno": 124,
+      "userid": "유저아이디3",
+      "subject": "제목3",
+      "hit": "283",
+      "regtime": "2023-05-19T10:30:00Z",
+      "content": null
+    }
+  ],
+  "post": {
+    "articleno": 123,
+    "userid": "유저아이디1",
+    "subject": "제목1",
+    "hit": "281",
+    "regtime": "2023-05-19T10:30:00Z",
+    "content": "내용1"
+  }
+}
