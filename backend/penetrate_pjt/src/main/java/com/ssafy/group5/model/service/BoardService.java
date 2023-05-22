@@ -1,5 +1,6 @@
 package com.ssafy.group5.model.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -9,12 +10,11 @@ import com.ssafy.group5.util.PageNavigation;
 
 public interface BoardService {
 	
-	public boolean writeArticle(Board boardDto) throws Exception;
-	public List<Board> listArticle(Map<String, ?> param) throws Exception;
-	public PageNavigation makePageNavigation(BoardParameter boardParameterDto) throws Exception;
-	
-	public Board getArticle(int articleno) throws Exception;
-	public void updateHit(int articleno) throws Exception;
-	public boolean modifyArticle(Board boardDto) throws Exception;
-	public boolean deleteArticle(int articleno) throws Exception;
+	public boolean writeArticle(Board board) throws Exception;
+	public List<Board> listArticle(Map<String, ?> param) throws SQLException;
+	public PageNavigation makePageNavigation(BoardParameter boardParameter) throws SQLException;
+	public Board getArticle(int articleno) throws SQLException;
+	public void updateHit(int articleno) throws SQLException;
+	public boolean modifyArticle(Board board) throws SQLException;
+	public boolean deleteArticle(int articleno) throws SQLException;
 }

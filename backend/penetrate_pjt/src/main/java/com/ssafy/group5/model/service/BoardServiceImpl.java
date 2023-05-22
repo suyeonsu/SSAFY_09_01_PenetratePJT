@@ -1,5 +1,6 @@
 package com.ssafy.group5.model.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -11,7 +12,6 @@ import com.ssafy.group5.dto.Board;
 import com.ssafy.group5.dto.BoardParameter;
 import com.ssafy.group5.model.mapper.BoardMapper;
 import com.ssafy.group5.util.PageNavigation;
-
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -28,16 +28,12 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public List<Board> listArticle(Map<String, ?> param) throws Exception {
-//		int start = boardParameter.getPg() == 0 ? 0 : (boardParameter.getPg() - 1) * boardParameter.getSpp();
-//		boardParameter.setStart(start);
-//		return boardMapper.listArticle(boardParameter);
-		
+	public List<Board> listArticle(Map<String, ?> param) throws SQLException {
 		return boardMapper.listArticle(param);
 	}
 
 	@Override
-	public PageNavigation makePageNavigation(BoardParameter boardParameter) throws Exception {
+	public PageNavigation makePageNavigation(BoardParameter boardParameter) throws SQLException {
 		int naviSize = 5;
 		PageNavigation pageNavigation = new PageNavigation();
 		pageNavigation.setCurrentPage(boardParameter.getPg());
@@ -55,24 +51,24 @@ public class BoardServiceImpl implements BoardService {
 	}
 
 	@Override
-	public Board getArticle(int articleno) throws Exception {
+	public Board getArticle(int articleno) throws SQLException {
 		return boardMapper.getArticle(articleno);
 	}
 	
 	@Override
-	public void updateHit(int articleno) throws Exception {
+	public void updateHit(int articleno) throws SQLException {
 		boardMapper.updateHit(articleno);
 	}
 
 	@Override
 	@Transactional
-	public boolean modifyArticle(Board board) throws Exception {
+	public boolean modifyArticle(Board board) throws SQLException {
 		return boardMapper.modifyArticle(board) == 1;
 	}
 
 	@Override
 	@Transactional
-	public boolean deleteArticle(int articleno) throws Exception {
+	public boolean deleteArticle(int articleno) throws SQLException {
 		return boardMapper.deleteArticle(articleno) == 1;
 	}
 }
