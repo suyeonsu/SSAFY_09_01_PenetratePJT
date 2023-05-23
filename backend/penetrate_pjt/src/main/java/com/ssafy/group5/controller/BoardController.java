@@ -1,7 +1,6 @@
 package com.ssafy.group5.controller;
 
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
 import com.ssafy.group5.dto.Board;
 import com.ssafy.group5.model.service.BoardService;
 
@@ -36,9 +38,10 @@ public class BoardController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<List<Board>> listArticle(@RequestBody Map<String, ?> param) throws SQLException {
+	public ResponseEntity<PageInfo<Board>> listArticle(@RequestParam int pageNum, @RequestParam int pageSize, @RequestBody Map<String, ?> param) throws SQLException {
 		log.debug("listArticle에서 전달받은 파라미터: {}", param);
-		return new ResponseEntity<List<Board>>(boardService.listArticle(param), HttpStatus.OK);
+		PageHelper.startPage(pageNum, pageSize);
+		return new ResponseEntity<PageInfo<Board>>(PageInfo.of(boardService.listArticle(param)), HttpStatus.OK);
 	}
 	
 	@GetMapping("/{articleno}")

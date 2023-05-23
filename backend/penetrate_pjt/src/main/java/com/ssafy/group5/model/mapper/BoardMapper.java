@@ -7,14 +7,13 @@ import java.util.Map;
 import org.apache.ibatis.annotations.Mapper;
 
 import com.ssafy.group5.dto.Board;
-import com.ssafy.group5.dto.BoardParameter;
 
 @Mapper
 public interface BoardMapper {
 	
 	public int writeArticle(Board board) throws SQLException;
 	public List<Board> listArticle(Map<String, ?> param) throws SQLException;
-	public int getTotalCount(BoardParameter boardParameter) throws SQLException;
+	public int getTotalCount(Map<String, ?> param) throws SQLException;
 	public Board getArticle(int articleno) throws SQLException;
 	public void updateHit(int articleno) throws SQLException;
 	public int modifyArticle(Board board) throws SQLException;

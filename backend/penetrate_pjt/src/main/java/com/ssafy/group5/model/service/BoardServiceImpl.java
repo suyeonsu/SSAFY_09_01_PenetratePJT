@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.group5.dto.Board;
-import com.ssafy.group5.dto.BoardParameter;
 import com.ssafy.group5.model.mapper.BoardMapper;
-import com.ssafy.group5.util.PageNavigation;
 
 @Service
 public class BoardServiceImpl implements BoardService {
@@ -31,25 +29,7 @@ public class BoardServiceImpl implements BoardService {
 	public List<Board> listArticle(Map<String, ?> param) throws SQLException {
 		return boardMapper.listArticle(param);
 	}
-
-	@Override
-	public PageNavigation makePageNavigation(BoardParameter boardParameter) throws SQLException {
-		int naviSize = 5;
-		PageNavigation pageNavigation = new PageNavigation();
-		pageNavigation.setCurrentPage(boardParameter.getPg());
-		pageNavigation.setNaviSize(naviSize);
-		int totalCount = boardMapper.getTotalCount(boardParameter);//총글갯수  269
-		pageNavigation.setTotalCount(totalCount);  
-		int totalPageCount = (totalCount - 1) / boardParameter.getSpp() + 1;//27
-		pageNavigation.setTotalPageCount(totalPageCount);
-		boolean startRange = boardParameter.getPg() <= naviSize;
-		pageNavigation.setStartRange(startRange);
-		boolean endRange = (totalPageCount - 1) / naviSize * naviSize < boardParameter.getPg();
-		pageNavigation.setEndRange(endRange);
-		pageNavigation.makeNavigator();
-		return pageNavigation;
-	}
-
+	
 	@Override
 	public Board getArticle(int articleno) throws SQLException {
 		return boardMapper.getArticle(articleno);
