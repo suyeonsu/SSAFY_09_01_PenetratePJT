@@ -20,18 +20,29 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void signUp(User user) {
+	public void signUp(Map<String, Object> user) {
 		userMapper.signUp(user);
 	}
 
 	@Override
-	public void updateUserInfo(Map<String, ?> param) {
+	public User getUserById(Map<String, Object> param) {
+		return userMapper.getUserById(param);
+	}
+
+	@Override
+	public void updateUserInfo(Map<String, Object> param) {
 		userMapper.updateUserInfo(param);
 	}
+	
 
 	@Override
 	public void deleteUser(User user) {
 		userMapper.deleteUser(user);
+	}
+
+	@Override
+	public void changePassword(Map<String, Object> param) {
+		userMapper.changePassword(param);
 	}
 
 }
