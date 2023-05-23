@@ -37,18 +37,30 @@ public class MailServiceImpl implements MailService {
 		String html = null;
 		switch(type) {
 		case "register":
-			html = "<br>\n"
-		            + "<h2>#$@!@~!에서 발송한 이메일 인증 코드 안내 메일입니다.</h2>\n"
-		            + "<br/>\n"
-		            + "<p>아래 코드를 입력해 이메일 인증을 완료해주시기 바랍니다.</p>\n"
-		            + "<p><strong>" + code + "</strong></p>";
+			html = "<div style=\"margin:100px;\">\n"
+					+ "    <h1>여기어떤데에서 발송한 이메일 인증 코드 안내 메일입니다.</h1>\n"
+					+ "    <br>\n"
+					+ "    <p>아래 코드를 회원가입 창으로 돌아가 입력해주세요.</p>\n"
+					+ "    <br>\n"
+					+ "    <div align=\"center\" style=\"border:1px solid black; font-family:verdana;\">\n"
+					+ "        <h3 style=\"color:blue\"> 회원가입 인증 코드 </h3>\n"
+					+ "        <div style=\"font-size:130%\">"+ code + "</div>\n"
+					+ "    </div>\n"
+					+ "    <br/>\n"
+					+ "</div>";
 			break;
 		case "findpw":
-			html = "<br>\n"
-		            + "<h2>#$@!@~!에서 발송한 임시 비밀번호 발급 안내 메일입니다.</h2>\n"
-		            + "<br/>\n"
-		            + "<p>아래 임시 비밀번호로 로그인 후 비밀번호를 변경해주시기 바랍니다.</p>\n"
-		            + "<p><strong>" + code + "</strong></p>";
+			html = "<div style=\"margin:100px;\">\n"
+					+ "    <h1>여기어떤데에서 발송한 임시 비밀번호 안내 메일입니다.</h1>\n"
+					+ "    <br>\n"
+					+ "    <p>아래 발급된 임시 비밀번호로 로그인해주세요.</p>\n"
+					+ "    <br>\n"
+					+ "    <div align=\"center\" style=\"border:1px solid black; font-family:verdana;\">\n"
+					+ "        <h3 style=\"color:blue\"> 임시 비밀번호 </h3>\n"
+					+ "        <div style=\"font-size:130%\">"+ code + "</div>\n"
+					+ "    </div>\n"
+					+ "    <br/>\n"
+					+ "</div>";
 			break;
 		}
 		return html;
@@ -64,12 +76,12 @@ public class MailServiceImpl implements MailService {
 		case "register":
 			code = makeCode(6);
 			html = makeHtml(type, code);
-			subject = "[여행어쩌구] 이메일 인증 코드";
+			subject = "[여기어떤데] 이메일 인증 코드";
 			break;
 		case "findpw":
 			code = makeCode(10);
 			html = makeHtml(type, code);
-			subject = "[여행어쩌구] 임시 비밀번호 발급";
+			subject = "[여기어떤데] 임시 비밀번호 발급 ";
 			break;
 		}
 		
