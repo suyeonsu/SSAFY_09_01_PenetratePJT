@@ -16,8 +16,8 @@
 
 	<!-- 관광지 목록 조회 -->
 	<select id="attractionList" parameterType="Map" resultMap="AttractionMap">
-	  SELECT a.content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) total_score
-	  FROM attraction a left join rating r on a.content_id = r.content_id
+	  SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) total_score
+	  FROM attraction a left join rating r on content_id = attraction_id
 	  <where>
 	    <if test="type != null">
 	      content_type_id = #{type}
