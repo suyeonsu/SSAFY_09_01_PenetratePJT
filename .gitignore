@@ -118,3 +118,4 @@ fabric.properties
 
 Servers
 /.metadata/
+.DS_Store
