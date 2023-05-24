@@ -1,5 +1,6 @@
 import { createApp } from "vue";
 import App from "./App.vue";
+import piniaPluginPersistedstate from "pinia-plugin-persistedstate";
 
 // vue-router
 import router from "./router";
@@ -7,6 +8,7 @@ import router from "./router";
 // pinia
 import { createPinia } from "pinia";
 const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
 
 // fontawesome 사용 libravry
 import { FontAwesomeIcon } from "@fortawesome/vue-fontawesome";

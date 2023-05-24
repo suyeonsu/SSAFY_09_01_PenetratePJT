@@ -9,9 +9,16 @@
           :errorMsg="duplicateError"
           >아이디</InputCompVue
         >
-        <InputCompVue type="email" required @changeValue="setEmail"
-          >이메일</InputCompVue
-        >
+        <div class="email">
+          <InputCompVue
+            class="email-input"
+            type="email"
+            required
+            @changeValue="setEmail"
+            >이메일</InputCompVue
+          >
+          <div class="email-certificate">인증하기</div>
+        </div>
         <InputCompVue required @changeValue="setUserName">이름</InputCompVue>
         <InputCompVue type="password" required @changeValue="setUserPassword"
           >비밀번호</InputCompVue
@@ -107,16 +114,24 @@ export default {
     }
     .join-form {
       width: 80%;
-      * {
+      & > * {
         margin-top: 1.1rem;
       }
-      .inspection {
-        display: block;
-        .green {
-          color: green;
+      .email {
+        display: flex;
+        .email-input {
+          width: 80%;
         }
-        .red {
-          color: $warning;
+        .email-certificate {
+          display: flex;
+          width: 20%;
+          color: white;
+          font-weight: bold;
+          box-sizing: border-box;
+          background: $primary;
+          justify-content: center;
+          align-items: center;
+          cursor: pointer;
         }
       }
       .button {

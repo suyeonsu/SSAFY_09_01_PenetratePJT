@@ -46,9 +46,12 @@ export default {
       return this.tourStore.detailPlace;
     },
     imageURL() {
-      return this.placeInfo.firstimage.length > 0
-        ? this.placeInfo.firstimage
-        : require("@/assets/image/default.jpg");
+      if (this.placeInfo.firstimage != null) {
+        return this.placeInfo.firstimage.length > 0
+          ? this.placeInfo.firstimage
+          : require("@/assets/image/default.jpg");
+      }
+      return null;
     },
   },
   unmounted() {

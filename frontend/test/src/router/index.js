@@ -8,12 +8,11 @@ import LoginView from "@/views/user/LoginView.vue";
 import UserPageView from "@/views/user/UserPageView.vue";
 import MyPlaceListView from "@/views/tour/MyPlaceListView.vue";
 import MyPlaceDetailView from "@/views/tour/MyPlaceDetailView.vue";
-import PlanListView from "@/views/tour/PlanListView.vue";
-import PlanDetailView from "@/views/tour/PlanDetailView.vue";
 import FreeBoardViewVue from "@/views/board/FreeBoardView.vue";
 import FreeBoardListViewVue from "@/views/board/FreeBoardListView.vue";
 import FreeBoardEditViewVue from "@/views/board/FreeBoardEditView.vue";
 import FreeBoardDetailViewVue from "@/views/board/FreeBoardDetailView.vue";
+import FindPasswordViewVue from "@/views/user/FindPasswordView.vue";
 
 const routes = [
   { path: "/", name: "home", component: HomeView },
@@ -46,18 +45,6 @@ const routes = [
           },
         ],
       },
-      {
-        path: "plan",
-        name: "planList",
-        component: PlanListView,
-        children: [
-          {
-            path: ":id",
-            name: "planDetail",
-            component: PlanDetailView,
-          },
-        ],
-      },
     ],
   },
   {
@@ -84,6 +71,7 @@ const routes = [
   },
   { path: "/user/login", name: "login", component: LoginView },
   { path: "/user/join", name: "join", component: JoinView },
+  { path: "/user/find", name: "findPassword", component: FindPasswordViewVue },
   { path: "/user/:id", name: "userpage", component: UserPageView },
 ];
 

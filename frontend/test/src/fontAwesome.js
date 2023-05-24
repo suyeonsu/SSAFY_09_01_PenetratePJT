@@ -10,21 +10,30 @@ import {
   faChevronLeft,
   faX,
   faPencil,
-  faStar as fasStar,
+  faStar,
+  faBookmark,
   faFontAwesome,
 } from "@fortawesome/free-solid-svg-icons";
-import { faStar, faHeart } from "@fortawesome/free-regular-svg-icons";
+import {
+  faStar as farStar,
+  faHeart as farHeart,
+  faBookmark as farBookmark,
+  faCircleDot as farCircleDot,
+} from "@fortawesome/free-regular-svg-icons";
 
 library.add(
   faPlaneDeparture,
   faMagnifyingGlass,
   faStar,
-  faHeart,
   faLocationDot,
   faChevronRight,
   faChevronLeft,
   faX,
   faPencil,
-  fasStar,
+  faBookmark,
+  farStar,
+  farHeart,
+  farBookmark,
+  farCircleDot,
   faFontAwesome
 );

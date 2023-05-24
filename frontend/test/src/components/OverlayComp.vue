@@ -1,5 +1,5 @@
 <template>
-  <div @click="handler" :class="{ container: true, active }">
+  <div :class="{ container: true, active }">
     <div class="image">
       <img
         :src="require(`@/assets/image/tour/${imageName}.png`)"
@@ -19,9 +19,6 @@ export default {
     imageName: String,
     contentid: String,
   },
-  created() {
-    console.log(this.title, this.imageName, this.contentid);
-  },
   setup() {
     const tourStore = useTourStore();
     return { tourStore };
@@ -29,11 +26,6 @@ export default {
   computed: {
     active() {
       return this.tourStore.activePlace === this.contentid;
-    },
-  },
-  methods: {
-    handler() {
-      this.tourStore.goToDetail(this.contentid);
     },
   },
 };
@@ -52,10 +44,13 @@ export default {
   padding-right: 1rem;
   cursor: pointer;
   transition: 0.1s;
+  position: relative;
   &:hover,
   &.active {
     background: $primary;
     color: white;
+    z-index: 9999999999 !important;
+    position: relative;
   }
   .image {
     width: 2rem;

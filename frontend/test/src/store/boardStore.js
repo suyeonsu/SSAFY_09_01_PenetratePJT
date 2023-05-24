@@ -1,18 +1,51 @@
 import axios from "axios";
 import { defineStore } from "pinia";
 import { ref } from "vue";
+import { useUserStore } from "./userStore";
 
 export const useBoardStore = defineStore("board", () => {
   // 시작 - 게시글 리스트 및 pagenation 관련
   const postList = ref([]); // 게시글 리스트
+
+  const userStore = useUserStore();
+  console.log(userStore);
+
   /** 게시글 리스트 데이터 받아오기 by API
    * pinia의 postList 배열에 데이터를 받아온다.
    */
-  function getPostListData(currentPageNo) {
-    console.log("현재 페이지 :", currentPageNo);
+  async function getPostListData(
+    pageNum,
+    filter = "",
+    keyword = "",
+    sort = "regtime",
+    pageSize = 10
+  ) {
+    console.log("현재 페이지 :", pageNum);
+    const ACCESS_TOKEN = `Bearer ${userStore.accessToken}`;
+    console.log(ACCESS_TOKEN);
+    // "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6InN1eWVvbiIsIm5hbWUiOiLsiJjsl7AiLCJleHAiOjE2ODYwNTcyMDh9.1y5YDbHNizE06C-IM6B_OlzuX8MPMovK8IorRPRx61M";
+    const parameters = {
+      pageNum,
+      filter,
+      keyword,
+      sort,
+      pageSize,
+    };
+    const options = {
+      headers: {
+        Authorization: ACCESS_TOKEN,
+      },
+      methods: "get",
+      url: "http://localhost:9000/group5/board",
+      params: parameters,
+    };
+
+    const res = await axios(options);
+    console.log(res);
+
     postList.value = [
       {
-        articleno: 123 + currentPageNo,
+        articleno: 123 + pageNum,
         userid: "유저아이디1",
         subject: "제목1",
         hit: 283,
@@ -20,7 +53,7 @@ export const useBoardStore = defineStore("board", () => {
         content: "컨텐츠입니다. 123",
       },
       {
-        articleno: 125 + currentPageNo,
+        articleno: 125 + pageNum,
         userid: "유저아이디2",
         subject: "제목2",
         hit: "282",
@@ -28,7 +61,7 @@ export const useBoardStore = defineStore("board", () => {
         content: "컨텐츠입니다. 125",
       },
       {
-        articleno: 124 + currentPageNo,
+        articleno: 124 + pageNum,
         userid: "유저아이디3",
         subject: "제목3",
         hit: "281",
@@ -36,7 +69,7 @@ export const useBoardStore = defineStore("board", () => {
         content: "컨텐츠입니다. 124",
       },
       {
-        articleno: 129 + currentPageNo,
+        articleno: 129 + pageNum,
         userid: "ssafy",
         subject: "제목4",
         hit: "280",

@@ -13,7 +13,9 @@
         </label>
         <button class="main-button">로그인</button>
         <div class="sub-menu">
-          <div class="item">비밀번호 찾기</div>
+          <router-link class="item" :to="{ name: 'findPassword' }"
+            >비밀번호 찾기</router-link
+          >
           <router-link class="item" :to="{ name: 'join' }"
             >회원 가입</router-link
           >
@@ -40,8 +42,11 @@ export default {
       },
     };
   },
-  computed: {
-    ...mapStores(useUserStore),
+  setup() {
+    const userStore = useUserStore();
+    return {
+      userStore,
+    };
   },
   components: {
     InputCompVue,
@@ -54,12 +59,13 @@ export default {
 
       // 시작: 임시 로그인 기능
       const tmpJWT =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6InNzYWZ5IiwibmFtZSI6InNzYWZ5IiwiZXhwIjoxNjgzNzc2NjU0fQ.9slBU-UA8YWWKKYLMh0csjcaaAlYHJ5gVc0gP5OCp-k";
+        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6InN1eWVvbiIsIm5hbWUiOiLsiJjsl7AiLCJleHAiOjE2ODYwNTcyMDh9.1y5YDbHNizE06C-IM6B_OlzuX8MPMovK8IorRPRx61M";
       const userInfo = jwt_decode(tmpJWT);
       this.userStore.userInfo.id = userInfo.id;
       this.userStore.userInfo.name = userInfo.name;
       // 끝: 임시 로그인 기능
 
+      this.userStore.accessToken = tmpJWT;
       // 시작: 로그인 유지
       if (this.user.isRemember) {
         window.localStorage.setItem(

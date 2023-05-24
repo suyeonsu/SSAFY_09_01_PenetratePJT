@@ -45,8 +45,11 @@ export default {
       // console.log(this.userStore.userInfo);
     }
   },
-  computed: {
-    ...mapStores(useUserStore),
+  setup() {
+    const userStore = useUserStore();
+    return {
+      userStore,
+    };
   },
   methods: {
     logout() {

@@ -47,6 +47,7 @@
 
 <script>
 import { useBoardStore } from "@/store/boardStore";
+import { useUserStore } from "@/store/userStore";
 export default {
   data() {
     return {

@@ -1,6 +1,9 @@
 <template>
   <div class="tour">
     <div id="map" ref="map">
+      <div @click="tourStore.moveToCurrent" id="go-to-current">
+        <font-awesome-icon :icon="['far', 'circle-dot']" />
+      </div>
       <div class="side-bar">
         <ul class="title">
           <div>
@@ -105,15 +108,15 @@ export default {
         {
           id: 1,
           image: "myplace",
-          text: "내장소",
+          text: "북마크",
           name: "myPlaceList",
         },
-        {
-          id: 2,
-          image: "destination",
-          text: "여행계획",
-          name: "planList",
-        },
+        // {
+        //   id: 2,
+        //   image: "destination",
+        //   text: "여행계획",
+        //   name: "planList",
+        // },
       ],
     };
   },
@@ -122,6 +125,9 @@ export default {
     return {
       tourStore,
     };
+  },
+  created() {
+    // this.tourStore.$reset();
   },
   mounted() {
     if (window.kakao && window.kakao.maps) {
@@ -132,26 +138,31 @@ export default {
     }
   },
   methods: {
-    /** 카카오 맵 스크립트 파일 로딩 메소드 */
+    /** 카카오 맵 스크립트 파일 로딩 메소드
+     * 1. 카카오 맵 스크립트를 로딩
+     * 2. 로딩 성공시 loadMap() 메소드 실행
+     */
     loadScript() {
       // 카카오 맵 스크립트 추가하기
       const script = document.createElement("script");
-      const API_KEY = "c27c029a47d8b36a3390ddda157d4950";
       script.type = "text/javascript";
-      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${API_KEY}`;
+      script.src = `//dapi.kakao.com/v2/maps/sdk.js?autoload=false&appkey=${process.env.VUE_APP_KAKAO_API_KEY}`;
       /* global kakao */ // eslint에게 kakao가 전역변수임을 알려준다.
       script.onload = () => {
-        kakao.maps.load(this.loadMap);
+        // kakao.maps.load(this.loadMap);
+        this.loadMap();
       }; // 스크립트 로드 및 maps load가 끝나면, 지도 실행
       document.head.appendChild(script);
       // document의 head에 script 소스 추가.
     },
 
-    /** 지도 초기 로딩 함수 */
+    /** 지도 초기 로딩 함수
+     * map 레퍼런스에 지도 객체 할당하는 initMap() 함수 실행
+     * this.$refs.map: 지도를 담을 영역의 DOM 레퍼런스
+     */
     loadMap() {
       window.kakao.maps.load(() => {
-        const container = this.$refs.map; //지도를 담을 영역의 DOM 레퍼런스
-        this.tourStore.initMap(container);
+        this.tourStore.initMap(this.$refs.map);
       });
     },
 
@@ -176,11 +187,30 @@ export default {
 .tour {
   position: relative;
   height: 90vh;
-  background: tomato;
+  background: beige;
   #map {
     position: absolute;
     width: 100%;
     height: 100%;
+    #go-to-current {
+      position: absolute;
+      width: 2rem;
+      height: 2rem;
+      right: 1px;
+      top: 200px;
+      border: 1px solid lightgray;
+      background: white;
+      border-radius: 0.5rem;
+      font-size: 1.2rem;
+      z-index: 99999;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      &:hover {
+        background: lightgray;
+      }
+    }
   }
   .side-bar {
     // 사이드바 전체

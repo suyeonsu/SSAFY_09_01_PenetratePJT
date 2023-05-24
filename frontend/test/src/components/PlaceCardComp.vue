@@ -10,10 +10,10 @@
         </h3>
         <div @click.stop="bookmarkHandler" class="my-place">
           <div v-show="item.bookMark">
-            <font-awesome-icon :icon="['fass', 'star']" />
+            <font-awesome-icon :icon="['fas', 'bookmark']" />
           </div>
           <div v-show="!item.bookMark">
-            <font-awesome-icon :icon="['far', 'star']" />
+            <font-awesome-icon :icon="['far', 'bookmark']" />
           </div>
         </div>
       </div>
