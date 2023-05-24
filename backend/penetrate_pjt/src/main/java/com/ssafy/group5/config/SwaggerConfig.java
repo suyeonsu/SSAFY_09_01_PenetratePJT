@@ -18,14 +18,14 @@ public class SwaggerConfig {
 
 	//swagger 3버전
 	//http://localhost{서비스 중인 포트번호}/{context-path}/swagger-ui/index.html
-	//http://localhost:9000/api/swagger-ui/index.html
+	//http://localhost:9000/group5/swagger-ui/index.html
 	
 	@Bean
 	public Docket api() {
 		//api 정보 설정
 		final ApiInfo apiInfo = new ApiInfoBuilder()
-				.title("SSAFY 도서관리 API")
-				.description("<h3>워크샵에서 사용되는 RestApi에 대한 문서를 제공한다.</h3>")
+				.title("관광지 정보 API")
+				.description("<h3>관광지 정보 제공 및 회원 관리 API 명세서</h3>")
 				.contact(new Contact("SSAFY", "https://edu.ssafy.com", "ssafy@ssafy.com"))
 				.license("MIT License")
 				.version("1.0")
@@ -36,7 +36,7 @@ public class SwaggerConfig {
 				.select()
 				.apis(RequestHandlerSelectors.basePackage("com.ssafy.group5.controller"))	//문서화할 컨트롤러가 있는 패키지
 				.paths(PathSelectors.any())
-//				.paths(PathSelectors.ant("/**/user/**"))//위 패키지의 컨트롤러에 매핑된 것중 해당 url의 요청만 문서화
+//				.paths(PathSelectors.any("/**/user/**"))//위 패키지의 컨트롤러에 매핑된 것중 해당 url의 요청만 문서화
 //				/webex/book/webe/xbex
 //				/book
 //				/webex/abddc/book
