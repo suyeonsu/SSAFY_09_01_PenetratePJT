@@ -39,14 +39,20 @@ public class AttractionController {
 		@ApiImplicitParam(name = "type", value = "관광지 타입", required = true, dataType = "int", paramType = "query", defaultValue = "12"),
 		@ApiImplicitParam(name = "keywords", value = "사용자 입력 검색어", required = false, dataType = "String", paramType = "query", defaultValue = ""),
 		@ApiImplicitParam(name = "sido", value = "시/도 코드", required = false, dataType = "int", paramType = "query", defaultValue = "0"),
-		@ApiImplicitParam(name = "gugun", value = "구/군 코드", required = false, dataType = "int", paramType = "query", defaultValue = "0")
+		@ApiImplicitParam(name = "gugun", value = "구/군 코드", required = false, dataType = "int", paramType = "query", defaultValue = "0"),
+		@ApiImplicitParam(name = "curlatitude", value = "현위치 위도", required = false, dataType = "double", paramType = "query", defaultValue = "0"),
+		@ApiImplicitParam(name = "curlongitude", value = "현위치 경도", required = false, dataType = "double", paramType = "query", defaultValue = "0"),
+		@ApiImplicitParam(name = "sort", value = "정렬 기준(distance, readcount, star, title 중 택1)", required = false, dataType = "String", paramType = "query", defaultValue = "readcount")
 	})
-	public ResponseEntity<PageInfo<Attraction>> getAttractionList(@RequestParam int pageNum, @RequestParam int pageSize, @RequestParam int type, @RequestParam List<String> keywords, @RequestParam(defaultValue = "0") int sido, @RequestParam(defaultValue = "0") int gugun) throws SQLException {
+	public ResponseEntity<PageInfo<Attraction>> getAttractionList(@RequestParam int pageNum, @RequestParam int pageSize, @RequestParam int type, @RequestParam(defaultValue = "") List<String> keywords, @RequestParam(defaultValue = "0") int sido, @RequestParam(defaultValue = "0") int gugun, @RequestParam(defaultValue = "0") double curlatitude, @RequestParam(defaultValue = "0") double curlongitude, @RequestParam(defaultValue = "readcount") String sort) throws SQLException {
 		Map<String, Object> param = new HashMap<>();
 		param.put("type", type);
 		param.put("keywords", keywords);
 		param.put("sido", sido);
 		param.put("gugun", gugun);
+		param.put("curlatitude", curlatitude);
+		param.put("curlongitude", curlongitude);
+		param.put("sort", sort);
 		log.debug("getAttractionList에서 전달받은 파라미터: {}", param);
 		PageHelper.startPage(pageNum, pageSize);
 		return new ResponseEntity<PageInfo<Attraction>>(PageInfo.of(attractionService.getAttractionList(param)), HttpStatus.OK);
