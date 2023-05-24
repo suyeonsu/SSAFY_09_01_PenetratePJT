@@ -53,7 +53,7 @@ public class MailServiceImpl implements MailService {
 			html = "<div style=\"margin:100px;\">\n"
 					+ "    <h1>여기어떤데에서 발송한 임시 비밀번호 안내 메일입니다.</h1>\n"
 					+ "    <br>\n"
-					+ "    <p>아래 발급된 임시 비밀번호로 로그인해주세요.</p>\n"
+					+ "    <p>아래 발급된 임시 비밀번호로 로그인해주세요.</br>임시 비밀번호는 보안에 취약하므로 로그인 후 비밀번호를 변경하시기 바랍니다.</p>\n"
 					+ "    <br>\n"
 					+ "    <div align=\"center\" style=\"border:1px solid black; font-family:verdana;\">\n"
 					+ "        <h3 style=\"color:blue\"> 임시 비밀번호 </h3>\n"
