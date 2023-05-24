@@ -22,10 +22,14 @@ import com.ssafy.group5.model.service.MailService;
 import com.ssafy.group5.model.service.UserService;
 import com.ssafy.group5.util.JwtUtil;
 
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/auth")
+@Slf4j
 public class AuthController {
 	
 	@Autowired
@@ -52,13 +56,29 @@ public class AuthController {
 		else return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
+	@GetMapping("/check")
+	@ApiOperation(value = "아이디/이메일 중복 체크", notes = "입력받은 아이디/이메일의 중복 여부를 반환한다.")
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "key", value = "userid(아이디) 또는 email(이메일)", required = true, dataType = "String", paramType = "query", defaultValue = "userid"),
+		@ApiImplicitParam(name = "val", value = "사용자 입력값", required = true, dataType = "String", paramType = "query", defaultValue = "")
+	})
+	public ResponseEntity<?> checkDuplication(@RequestParam(defaultValue = "") String key, @RequestParam(defaultValue = "") String val) throws SQLException {
+		Map<String, Object> param = new HashMap<>();
+		param.put("key", key);
+		param.put("val", val);
+		log.debug("authController에서 받은 param: {}", param);
+		Map<String, String> resultMap = new HashMap<>();
+		resultMap.put("message", userService.checkDuplication(param));
+		return new ResponseEntity<Map<String, String>>(resultMap, HttpStatus.ACCEPTED);
+	}
+	
 	@GetMapping
 	@ApiOperation(value = "회원 정보 조회", notes = "사용자가 입력한 아이디에 해당하는 유저 정보를 반환한다.")
 	public ResponseEntity<?> getUserInfo(@RequestParam String userId) throws SQLException {
 		return new ResponseEntity<User>(userService.getUser(userId), HttpStatus.OK);
 	}
 	
-	@PostMapping("signup")
+	@PostMapping("/signup")
 	@ApiOperation(value = "회원 가입", notes = "이메일 인증이 완료됐을 때만 요청 가능하며, 전달받은 user 정보를 db에 저장한다.")
 	public void signup(@RequestBody User user) throws SQLException {
 		userService.signUp(user);

@@ -12,6 +12,11 @@ public interface UserMapper {
 	User login(User user);
 	
 	/**
+	 * 아이디 또는 이메일 중복 체크
+	 */
+	int checkDuplication(Map<String, Object> param);
+	
+	/**
 	 * 유저 정보 반환
 	 */
 	User getUser(String userid);

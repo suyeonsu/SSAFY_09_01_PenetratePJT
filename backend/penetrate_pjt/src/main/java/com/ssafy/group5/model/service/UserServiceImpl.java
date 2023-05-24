@@ -20,6 +20,11 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
+	public String checkDuplication(Map<String, Object> param) {
+		return userMapper.checkDuplication(param) == 0 ? "valid" : "duplicated";
+	}
+	
+	@Override
 	public User getUser(String userid) {
 		return userMapper.getUser(userid);
 	}
