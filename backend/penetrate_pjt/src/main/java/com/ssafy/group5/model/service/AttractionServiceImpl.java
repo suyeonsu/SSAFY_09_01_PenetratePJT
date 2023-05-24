@@ -17,7 +17,7 @@ public class AttractionServiceImpl implements AttractionService {
 	private AttractionMapper attractionMapper;
 	
 	@Override
-	public List<Attraction> getAttractionList(Map<String, ?> param) throws SQLException {
+	public List<Attraction> getAttractionList(Map<String, Object> param) throws SQLException {
 		return attractionMapper.attractionList(param);
 	}
 

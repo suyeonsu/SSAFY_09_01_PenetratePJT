@@ -15,18 +15,23 @@ public class UserServiceImpl implements UserService {
 	private UserMapper userMapper;
 
 	@Override
-	public User getUser(User user) {
-		return userMapper.getUser(user);
+	public User login(User user) {
+		return userMapper.login(user);
+	}
+	
+	@Override
+	public User getUser(String userid) {
+		return userMapper.getUser(userid);
 	}
 
 	@Override
-	public void signUp(Map<String, Object> user) {
+	public void signUp(User user) {
 		userMapper.signUp(user);
 	}
 
 	@Override
-	public User getUserById(Map<String, Object> param) {
-		return userMapper.getUserById(param);
+	public User getUserById(User user) {
+		return userMapper.getUserById(user);
 	}
 
 	@Override

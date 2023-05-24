@@ -11,7 +11,7 @@ public interface AttractionService {
 	/**
 	 * 관광지 목록 조회
 	 */
-	List<Attraction> getAttractionList(Map<String, ?> param) throws SQLException;
+	List<Attraction> getAttractionList(Map<String, Object> param) throws SQLException;
 
 	/**
 	 * 관광지 상세 조회

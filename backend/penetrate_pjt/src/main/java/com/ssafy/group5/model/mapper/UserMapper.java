@@ -7,19 +7,24 @@ import com.ssafy.group5.dto.User;
 public interface UserMapper {
 	
 	/**
+	 * 로그인 
+	 */
+	User login(User user);
+	
+	/**
 	 * 유저 정보 반환
 	 */
-	User getUser(User user);
+	User getUser(String userid);
 	
 	/**
 	 * 회원가입
 	 */
-	void signUp(Map<String, Object> user);
+	void signUp(User user);
 	
 	/**
-	 * 아이디와 일치하는 회원 정보 반환
+	 * 아이디, 이메일과 일치하는 회원 정보 반환
 	 */
-	User getUserById(Map<String, Object> param);
+	User getUserById(User user);
 	
 	/**
 	 * 회원 정보 수정 

@@ -22,9 +22,7 @@ public class RatingServiceImpl implements RatingService {
 	@Override
 	public UserRating getUserRating(UserRating userRating) throws SQLException {
 		// user_rating에서 유저가 이전에 점수를 등록했었는지 여부 조회
-		UserRating beforeRating = ratingMapper.getUserRating(userRating);
-		// 있으면 해당 점수 반환, 없으면 null 반환
-		return beforeRating != null ? beforeRating : null;
+		return ratingMapper.getUserRating(userRating);
 	}
 
 	@Override

@@ -4,20 +4,28 @@
     
 <mapper namespace="com.ssafy.group5.model.mapper.UserMapper">
 	
-	<!-- 유저 정보 반환 -->
-	<select id="getUser" parameterType="User" resultType="User">
+	<!-- 로그인 -->
+	<select id="login" parameterType="User" resultType="User">
 		select *
 		from user
 		where userid=#{userid} and userpwd=#{userpwd}
 	</select>
 	
+	<!-- 유저 정보 반환 -->
+	<select id="getUser" parameterType="String" resultType="User">
+		select *
+		from user
+		where userid=#{userid}
+	</select>
+	
 	<!-- 회원가입 -->
-	<insert id="signUp" parameterType="Map">
+	<insert id="signUp" parameterType="User">
 		insert into user (userid, userpwd, username, email, joindate)
 		values (#{userid}, #{userpwd}, #{username}, #{email}, now())
 	</insert>
 	
-	<select id="getUserById" parameterType="Map" resultType="User">
+	<!-- 아이디, 이메일과 일치하는 회원 조회 -->
+	<select id="getUserById" parameterType="User" resultType="User">
 		select *
 		from user
 		where userid=#{userid} and email=#{email}
@@ -30,7 +38,7 @@
 		where userid=#{userid} and userpwd=#{userpwd}
 	</update>
 
-	<!-- 회원 정보 삭제 (회원 탈퇴) -->
+	<!-- 회원 탈퇴 -->
 	<delete id="deleteUser" parameterType="User">
 		delete from user
 		where userid=#{userid} and userpwd=#{userpwd}

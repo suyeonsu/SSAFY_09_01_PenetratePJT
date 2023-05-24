@@ -23,11 +23,9 @@ import com.ssafy.group5.model.service.UserService;
 import com.ssafy.group5.util.JwtUtil;
 
 import io.swagger.annotations.ApiOperation;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/auth")
-@Slf4j
 public class AuthController {
 	
 	@Autowired
@@ -40,8 +38,9 @@ public class AuthController {
 	private JwtUtil jwtUtil;
 	
 	@PostMapping("/login")
+	@ApiOperation(value = "로그인", notes = "사용자가 입력한 아이디와 비밀번호를 조회하고 토큰을 발급한다.")
 	public ResponseEntity<?> login(@RequestBody User user) throws SQLException, UnsupportedEncodingException{
-		User userInfo = userService.getUser(user);
+		User userInfo = userService.login(user);
 		if(userInfo!=null) {
 			String token = jwtUtil.createToken(userInfo, 60*60*24*365);
 			
@@ -54,18 +53,19 @@ public class AuthController {
 	}
 	
 	@GetMapping
-	public ResponseEntity<?> getUserInfo(@RequestBody User user) throws SQLException {
-		return new ResponseEntity<User>(userService.getUser(user), HttpStatus.OK);
+	@ApiOperation(value = "회원 정보 조회", notes = "사용자가 입력한 아이디에 해당하는 유저 정보를 반환한다.")
+	public ResponseEntity<?> getUserInfo(@RequestParam String userId) throws SQLException {
+		return new ResponseEntity<User>(userService.getUser(userId), HttpStatus.OK);
 	}
 	
-	@ApiOperation(value = "회원 가입", notes = "이메일 인증이 완료됐을 때만 요청 가능하다.")
 	@PostMapping("signup")
-	public void signup(@RequestBody Map<String, Object> user) throws SQLException {
+	@ApiOperation(value = "회원 가입", notes = "이메일 인증이 완료됐을 때만 요청 가능하며, 전달받은 user 정보를 db에 저장한다.")
+	public void signup(@RequestBody User user) throws SQLException {
 		userService.signUp(user);
 	}
 			
-	@ApiOperation(value = "이메일 인증코드 전송", notes = "전송한 인증코드를 반환한다.", response = Map.class)
 	@PostMapping("/sendmail")
+	@ApiOperation(value = "인증 메일 전송", notes = "'이메일 인증'과 '임시 비밀번호 발급' 중 수행하려는 작업 타입에 따라, 사용자 이메일로 인증 코드가 포함된 메일을 전송한다.", response = Map.class)
 	public ResponseEntity<Map<String, Object>> sendMail(@RequestBody Map<String, String> map) throws SQLException { 
 		Map<String, Object> resultMap = new HashMap<>();
 		HttpStatus status = null;
@@ -88,32 +88,29 @@ public class AuthController {
 		return new ResponseEntity<Map<String, Object>>(resultMap, status);
 	}
 	
-	@ApiOperation(value = "비밀번호를 찾기 위해 회원가입시 입력한 아이디, 이메일 정보 전달", notes = "입력한 아이디, 이메일 정보와 일치하는 사용자 정보를 반환한다.", response = User.class)
 	@GetMapping("/findpw")
-	public ResponseEntity<Map<String, Object>> findPassword(@RequestBody Map<String, Object> param) throws SQLException {
-		Map<String, Object> resultMap = new HashMap<>();
-		User userInfo = userService.getUserById(param);
-		if(userInfo != null) {
-			resultMap.put("message", "SUCCESS");
-		} else {
-			resultMap.put("message", "FAIL");
-		}
-		resultMap.put("userInfo", userInfo);
-		return new ResponseEntity<Map<String,Object>>(resultMap, HttpStatus.OK);
+	@ApiOperation(value = "비밀번호 찾기", notes = "회원가입시 입력한 아이디, 이메일 정보와 일치하는 사용자 정보를 반환한다.", response = User.class)
+	public ResponseEntity<User> findPassword(@RequestParam String userid, @RequestParam String email) throws SQLException {
+		User user = new User();
+		user.setUserid(userid);
+		user.setEmail(email);
+		return new ResponseEntity<User>(userService.getUserById(user), HttpStatus.OK);
 	}
 	
 	@PutMapping
+	@ApiOperation(value = "사용자 정보 수정", notes = "입력받은 정보로 사용자 정보를 갱신한다.")
 	public void updateProfile(@RequestBody Map<String, Object> param) {
 		userService.updateUserInfo(param);
 	}
 	
-	@ApiOperation(value = "비밀번호 변경을 위해 유저아이디, 기존 비밀번호, 새 비밀번호를 전달", notes = "현재 비밀번호가 일치할 경우 비밀번호를 갱신한다.")
 	@PutMapping("/updatepw")
+	@ApiOperation(value = "비밀번호 변경", notes = "현재 비밀번호가 일치할 경우 새 비밀번호로 갱신한다.")
 	public void updatePassword(@RequestBody Map<String, Object> param) throws SQLException {
 		userService.changePassword(param);
 	}
 	
 	@DeleteMapping
+	@ApiOperation(value = "회원 탈퇴", notes = "비밀번호가 일치할 경우 회원 탈퇴를 진행한다.")
 	public void withdrawal(@RequestBody User user) {
 		userService.deleteUser(user);
 	}

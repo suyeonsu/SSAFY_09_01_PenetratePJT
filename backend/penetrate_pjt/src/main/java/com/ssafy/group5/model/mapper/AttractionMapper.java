@@ -11,7 +11,7 @@ public interface AttractionMapper {
 	/**
 	 * 관광지 목록 조회
 	 */
-	List<Attraction> attractionList(Map<String, ?> param) throws SQLException;
+	List<Attraction> attractionList(Map<String, Object> param) throws SQLException;
 
 	/**
 	 * 관광지 상세 조회
