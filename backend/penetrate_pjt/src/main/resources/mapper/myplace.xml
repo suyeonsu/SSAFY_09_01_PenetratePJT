@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+    
+<mapper namespace="com.ssafy.group5.model.mapper.MyplaceMapper">
+
+	<resultMap type="Attraction" id="AttractionMap">
+		<id column="content_id" property="contentId"/>
+		<id column="content_type_id" property="contentTypeId"/>
+		<id column="first_image" property="firstImage"/>
+		<id column="first_image2" property="firstImage2"/>
+		<id column="sido_code" property="sidoCode"/>
+		<id column="gugun_code" property="gugunCode"/>
+		<id column="total_score" property="totalScore"/>
+	</resultMap>
+
+	<!-- 사용자의 북마크 목록 조회 -->
+	<select id="getMyplaceList" parameterType="String" resultMap="AttractionMap">
+		SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) total_score 
+		FROM (
+			select *
+			from attraction join myplace on content_id = attraction_id
+			where user_id=#{userid}
+		) a join rating r on content_id = r.attraction_id
+	</select>
+	
+	<!-- 북마크 등록 -->
+	<insert id="addMyplace" parameterType="Myplace">
+		insert into myplace (user_id, attraction_id)
+		values (#{userId}, #{attractionId})
+	</insert>
+
+	<!-- 북마크 취소 -->
+	<delete id="deleteMyplace" parameterType="Myplace">
+		delete from myplace
+		where user_id=#{userId} and attraction_id=#{attractionId}
+	</delete>
+
+</mapper>

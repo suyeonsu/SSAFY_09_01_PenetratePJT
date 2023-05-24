@@ -23,9 +23,10 @@ public class WebMvcConfig implements WebMvcConfigurer{
 	public void addInterceptors(InterceptorRegistry registry) {
 		//해당 요청 인터셉트
 		registry.addInterceptor(interceptor).addPathPatterns("/**/board/**");
-		registry.addInterceptor(interceptor).addPathPatterns("/**/auth/update");
-		registry.addInterceptor(interceptor).addPathPatterns("/**/auth/del");
+		registry.addInterceptor(interceptor).addPathPatterns("/**/auth");
+		registry.addInterceptor(interceptor).addPathPatterns("/**/auth/updatepw");
 		registry.addInterceptor(interceptor).addPathPatterns("/**/rate/**");
+		registry.addInterceptor(interceptor).addPathPatterns("/**/myplace/**");
 		
 		//해당 요청을 제외한 나머지 요청들 인터셉트
 //		registry.addInterceptor(interceptor).excludePathPatterns("/**/auth/**");
