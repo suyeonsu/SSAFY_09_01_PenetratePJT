@@ -36,6 +36,7 @@ public class JwtUtil {
 				//payload
 				.claim("id", user.getUserid())
 				.claim("name", user.getUsername())
+				.claim("email", user.getEmail())
 				.setExpiration( new Date(System.currentTimeMillis() + 1000 * expirationSecond) )
 				//singature
 				.signWith(SignatureAlgorithm.HS256, SECRET_KEY.getBytes("UTF-8"))

@@ -13,11 +13,6 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserMapper userMapper;
-
-	@Override
-	public User login(User user) {
-		return userMapper.login(user);
-	}
 	
 	@Override
 	public String checkDuplication(Map<String, Object> param) {
@@ -25,8 +20,8 @@ public class UserServiceImpl implements UserService {
 	}
 	
 	@Override
-	public User getUser(String userid) {
-		return userMapper.getUser(userid);
+	public User getUser(String userId) {
+		return userMapper.getUser(userId);
 	}
 
 	@Override
@@ -40,8 +35,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void updateUserInfo(Map<String, Object> param) {
-		userMapper.updateUserInfo(param);
+	public void updateUserInfo(User user) {
+		userMapper.updateUserInfo(user);
 	}
 	
 

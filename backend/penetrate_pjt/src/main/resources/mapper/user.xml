@@ -15,18 +15,11 @@
 		</where>
 	</select>
 	
-	<!-- 로그인 -->
-	<select id="login" parameterType="User" resultType="User">
-		select *
-		from user
-		where userid=#{userid} and userpwd=#{userpwd}
-	</select>
-	
 	<!-- 유저 정보 반환 -->
 	<select id="getUser" parameterType="String" resultType="User">
 		select *
 		from user
-		where userid=#{userid}
+		where userid=#{userId}
 	</select>
 	
 	<!-- 회원가입 -->
@@ -43,10 +36,10 @@
 	</select>
 	
 	<!-- 회원 정보 수정 -->
-	<update id="updateUserInfo" parameterType="Map">
+	<update id="updateUserInfo" parameterType="User">
 		update user 
-		set username=#{username}, email=#{email}
-		where userid=#{userid} and userpwd=#{userpwd}
+		set username=#{username}
+		where userid=#{userid} and email=#{email}
 	</update>
 
 	<!-- 회원 탈퇴 -->

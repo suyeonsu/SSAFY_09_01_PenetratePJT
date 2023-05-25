@@ -44,7 +44,7 @@ public class AuthController {
 	@PostMapping("/login")
 	@ApiOperation(value = "로그인", notes = "사용자가 입력한 아이디와 비밀번호를 조회하고 토큰을 발급한다.")
 	public ResponseEntity<?> login(@RequestBody User user) throws SQLException, UnsupportedEncodingException{
-		User userInfo = userService.login(user);
+		User userInfo = userService.getUser(user.getUserid());
 		if(userInfo!=null) {
 			String token = jwtUtil.createToken(userInfo, 60*60*24*365);
 			
@@ -119,8 +119,18 @@ public class AuthController {
 	
 	@PutMapping
 	@ApiOperation(value = "사용자 정보 수정", notes = "입력받은 정보로 사용자 정보를 갱신한다.")
-	public void updateProfile(@RequestBody Map<String, Object> param) {
-		userService.updateUserInfo(param);
+	public ResponseEntity<?> updateProfile(@RequestBody User user) throws UnsupportedEncodingException {
+		userService.updateUserInfo(user);
+		User userInfo = userService.getUser(user.getUserid());
+		if(userInfo!=null) {
+			String token = jwtUtil.createToken(userInfo, 60*60*24*365);
+			
+			Map<String, String> result = new HashMap<>();
+			result.put("token", token);
+			
+			return new ResponseEntity<Map<String, String>>(result, HttpStatus.OK);
+		}
+		else return new ResponseEntity<Void>(HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 	
 	@PutMapping("/updatepw")

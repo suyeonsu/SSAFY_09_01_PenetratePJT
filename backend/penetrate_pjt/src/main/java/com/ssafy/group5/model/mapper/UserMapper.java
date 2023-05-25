@@ -19,7 +19,7 @@ public interface UserMapper {
 	/**
 	 * 유저 정보 반환
 	 */
-	User getUser(String userid);
+	User getUser(String userId);
 	
 	/**
 	 * 회원가입
@@ -34,7 +34,7 @@ public interface UserMapper {
 	/**
 	 * 회원 정보 수정 
 	 */
-	void updateUserInfo(Map<String, Object> param);
+	void updateUserInfo(User user);
 	
 	/**
 	 * 회원 정보 삭제 (회원 탈퇴)
