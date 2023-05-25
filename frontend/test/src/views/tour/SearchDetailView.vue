@@ -20,28 +20,30 @@
       </header>
       <address>
         <div class="address-item rating">
-          <font-awesome-icon :icon="['fas', 'star']" />
+          <font-awesome-icon class="icon" :icon="['fas', 'star']" />
           {{ placeInfo.totalScore }}
-          <button v-if="!isRating" @click="startRating">별점 주기</button>
-          <template v-else>
-            <form @submit.prevent="rating">
-              <select name="rate" v-model="rate">
-                <option value="5">5점</option>
-                <option value="4">4점</option>
-                <option value="3">3점</option>
-                <option value="2">2점</option>
-                <option value="1">1점</option>
-              </select>
-              <button>저장하기</button>
-            </form>
+          <template v-if="userStore.userInfo.id">
+            <button v-if="!isRating" @click="startRating">별점 주기</button>
+            <template v-else>
+              <form @submit.prevent="rating">
+                <select name="rate" v-model="rate">
+                  <option value="5">5점</option>
+                  <option value="4">4점</option>
+                  <option value="3">3점</option>
+                  <option value="2">2점</option>
+                  <option value="1">1점</option>
+                </select>
+                <button>저장하기</button>
+              </form>
+            </template>
           </template>
         </div>
         <div v-if="placeInfo.addr1" class="address-item">
-          <font-awesome-icon :icon="['fas', 'location-dot']" />
+          <font-awesome-icon class="icon" :icon="['fas', 'location-dot']" />
           {{ placeInfo.addr1 }}
         </div>
         <div v-if="placeInfo.tel" class="address-item">
-          <font-awesome-icon :icon="['fas', 'phone']" />
+          <font-awesome-icon class="icon" :icon="['fas', 'phone']" />
           {{ placeInfo.tel }}
         </div>
       </address>
@@ -60,11 +62,14 @@
 
 <script>
 import { useTourStore } from "@/store/tourStore";
+import { useUserStore } from "@/store/userStore";
 export default {
   setup() {
     const tourStore = useTourStore();
+    const userStore = useUserStore();
     return {
       tourStore,
+      userStore,
     };
   },
   data() {
@@ -171,6 +176,9 @@ export default {
         margin-bottom: 0.5rem;
         display: flex;
         align-items: center;
+        .icon {
+          margin-right: 10px;
+        }
         &.rating {
           button {
             background: $background;
