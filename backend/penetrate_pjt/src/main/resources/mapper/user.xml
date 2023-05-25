@@ -45,7 +45,7 @@
 	<!-- 회원 탈퇴 -->
 	<delete id="deleteUser" parameterType="User">
 		delete from user
-		where userid=#{userid} and userpwd=#{userpwd}
+		where userid=#{userid} and email=#{email} and userpwd=#{userpwd}
 	</delete>
 	
 	<!-- 비밀번호 변경 -->

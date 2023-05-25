@@ -28,7 +28,7 @@
                 >수정완료</ButtonCompVue
               >
 
-              <ButtonCompVue @click="removePosting" class="btn"
+              <ButtonCompVue v-if="!isNew" @click="removePosting" class="btn"
                 >삭제하기</ButtonCompVue
               >
             </template>
@@ -106,6 +106,10 @@ export default {
       this.boardStore.nowPost.subject = data;
     },
     async posting() {
+      if (this.boardStore.nowPost.subject == "") {
+        alert("제목을 입력해주세요");
+        return;
+      }
       const flag = confirm("등록하시겠습니까?");
       if (flag) {
         try {

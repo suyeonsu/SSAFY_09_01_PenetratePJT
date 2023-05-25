@@ -194,7 +194,10 @@ export default {
           alert("이메일이 중복되었습니다. 다른 이메일을 사용해주세요.");
           return;
         } else {
-          const res = await this.userStore.requestVerifyEmail(this.user.email);
+          const res = await this.userStore.requestVerifyEmail(
+            this.user.email,
+            "register"
+          );
           // const res = true;
           if (res) {
             const time = 300;

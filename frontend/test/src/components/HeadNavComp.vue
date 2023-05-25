@@ -2,9 +2,11 @@
   <header class="nav">
     <ProjectIconComp />
     <nav>
-      <router-link :to="{ name: 'home' }">홈</router-link>
+      <!-- <router-link :to="{ name: 'home' }">홈</router-link> -->
       <router-link :to="{ name: 'searchList' }">여행지</router-link>
-      <router-link :to="{ name: 'freeBoardList', params: { pageNo: 1 } }"
+      <router-link
+        v-if="userStore.userInfo.id"
+        :to="{ name: 'freeBoardList', params: { pageNo: 1 } }"
         >자유게시판</router-link
       >
       <template v-if="userStore.userInfo.id">

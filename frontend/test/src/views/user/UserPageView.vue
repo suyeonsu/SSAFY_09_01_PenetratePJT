@@ -55,7 +55,7 @@
                 비밀번호
               </th>
               <td class="edit">
-                <input type="text" v-model="currentPassword" />
+                <input type="password" v-model="currentPassword" />
               </td>
             </tr>
             <tr class="change-password">
@@ -64,7 +64,7 @@
                 비밀번호
               </th>
               <td class="edit">
-                <input type="text" v-model="nextPassword1" />
+                <input type="password" v-model="nextPassword1" />
               </td>
             </tr>
             <tr class="change-password">
@@ -73,7 +73,7 @@
                 확인
               </th>
               <td class="edit">
-                <input type="text" v-model="nextPassword2" />
+                <input type="password" v-model="nextPassword2" />
               </td>
             </tr>
           </template>

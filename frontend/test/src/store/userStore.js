@@ -51,15 +51,16 @@ export const useUserStore = defineStore(
 
     /** 이메일 주소로 인증요청 보내기
      * @param {String} email 이메일 주소
+     * @param {String} type 이메일 인증[register] / 임시 비밀번호 [findpw]
      * @returns {Boolean} 요청 성공 여부
      */
 
     const verifyCode = ref("");
-    async function requestVerifyEmail(email) {
+    async function requestVerifyEmail(email, type) {
       try {
         const url = `${DOMAIN_URL}/auth/sendmail`;
         const data = {
-          type: "register",
+          type,
           email,
         };
         const options = {
@@ -251,7 +252,8 @@ export const useUserStore = defineStore(
 
         console.log("회원탈퇴 옵션:", options);
         const res = await axios(options);
-        if (res.status == 200) {
+        console.log(res);
+        if (res.data == 200) {
           console.log("회원탈퇴 성공:", res);
           return true;
         }

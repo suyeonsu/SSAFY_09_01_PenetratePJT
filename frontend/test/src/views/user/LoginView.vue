@@ -67,18 +67,22 @@ export default {
     async login() {
       try {
         const res = await this.userStore.login(this.user);
-        const userInfo = jwt_decode(res);
-        console.log("디코딩된 유저정보:", userInfo);
-        this.userStore.userInfo.id = userInfo.id;
-        this.userStore.userInfo.name = userInfo.name;
-        this.userStore.userInfo.email = userInfo.email;
-        this.userStore.accessToken = res;
-        this.userStore.isRemember = this.isRemember;
+        if (res.status == 200) {
+          const userInfo = jwt_decode(res);
+          console.log("디코딩된 유저정보:", userInfo);
+          this.userStore.userInfo.id = userInfo.id;
+          this.userStore.userInfo.name = userInfo.name;
+          this.userStore.userInfo.email = userInfo.email;
+          this.userStore.accessToken = res;
+          this.userStore.isRemember = this.isRemember;
 
-        console.log("로그인 성공:", res.data);
-        this.$router.push({ name: "home" });
+          alert("로그인 성공:", res.data);
+          this.$router.push({ name: "home" });
+        } else {
+          alert("로그인 실패");
+        }
       } catch (error) {
-        console.log("로그인 실패:", error);
+        alert("로그인 실패", error);
       }
     },
     setId(value) {
@@ -96,8 +100,9 @@ export default {
   height: 90vh;
   display: flex;
   justify-content: center;
-  background-image: url("@/assets/image/login.jpg");
-  background-size: cover;
+  background: $background;
+  // background-image: url("@/assets/image/login.jpg");
+  // background-size: cover;
   .container {
     width: 40%;
     background-color: $background;
