@@ -67,20 +67,16 @@ export default {
     async login() {
       try {
         const res = await this.userStore.login(this.user);
-        if (res.status == 200) {
-          const userInfo = jwt_decode(res);
-          console.log("디코딩된 유저정보:", userInfo);
-          this.userStore.userInfo.id = userInfo.id;
-          this.userStore.userInfo.name = userInfo.name;
-          this.userStore.userInfo.email = userInfo.email;
-          this.userStore.accessToken = res;
-          this.userStore.isRemember = this.isRemember;
+        const userInfo = jwt_decode(res);
+        console.log("디코딩된 유저정보:", userInfo);
+        this.userStore.userInfo.id = userInfo.id;
+        this.userStore.userInfo.name = userInfo.name;
+        this.userStore.userInfo.email = userInfo.email;
+        this.userStore.accessToken = res;
+        this.userStore.isRemember = this.isRemember;
 
-          alert("로그인 성공:", res.data);
-          this.$router.push({ name: "home" });
-        } else {
-          alert("로그인 실패");
-        }
+        alert("로그인 성공:", res.data);
+        this.$router.push({ name: "home" });
       } catch (error) {
         alert("로그인 실패", error);
       }
