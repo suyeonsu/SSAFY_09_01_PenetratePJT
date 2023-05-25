@@ -23,21 +23,6 @@ export const useUserStore = defineStore(
       accessToken.value = "";
     }
 
-    /** 쿠키 가져오기 */
-    function getCookies(cName) {
-      const cookies = document.cookie.split("; ").reduce((acc, cookie) => {
-        const [key, value] = cookie.split("=");
-        acc[key] = decodeURIComponent(value);
-        return acc;
-      }, {});
-      return cookies[cName];
-    }
-    /** 쿠키 삭제하기 */
-    function removeCookie(cName) {
-      const nowDate = new Date();
-      document.cookie = `${cName}=; ${nowDate}; path=/;`;
-    }
-
     /** 아이디 및 이메일 중복 체크
      * @param {String} key 아이디: userid, 이메일: email
      * @param {String} val 사용자 입력값
@@ -169,14 +154,14 @@ export const useUserStore = defineStore(
      */
     async function editUserName(nextName) {
       try {
-        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
         const url = `${DOMAIN_URL}/auth`;
+        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
 
         const data = {
-          id: userInfo.value.id,
-          name: nextName,
+          userid: userInfo.value.id,
+          username: nextName,
           email: userInfo.value.email,
-          password: "",
+          userpwd: "",
           joindate: "",
         };
 
@@ -188,12 +173,17 @@ export const useUserStore = defineStore(
           url,
           data,
         };
-
+        console.log("유저 정보 업데이트 옵션:", options);
         const res = await axios(options);
         console.log("유저 정보 업데이트 성공:", res);
-        userInfo.value.name = nextName;
+        if (res.data.token != null) {
+          accessToken.value = res.data.token;
+          return true;
+        }
+        return false;
       } catch (error) {
-        alert("유저 정보 업데이트 실패:", error);
+        console.log("유저 정보 업데이트 실패:", error);
+        throw error;
       }
     }
 
@@ -201,16 +191,17 @@ export const useUserStore = defineStore(
      *
      * @param {String} nextPassword 새 비밀번호
      */
-    async function editUserPassword(nextPassword) {
+    async function editUserPassword(curpwd, newpwd) {
       try {
-        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
         const url = `${DOMAIN_URL}/auth/updatepw`;
+        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
 
         const data = {
-          id: userInfo.value.id,
-          name: userInfo.value.name,
+          userid: userInfo.value.id,
+          username: userInfo.value.name,
           email: userInfo.value.email,
-          password: nextPassword,
+          newpwd,
+          curpwd,
           joindate: "",
         };
 
@@ -223,18 +214,57 @@ export const useUserStore = defineStore(
           data,
         };
 
+        console.log("비밀번호 업데이트 옵션:", options);
         const res = await axios(options);
         console.log("비밀번호 업데이트 성공:", res);
+        if (res.data != null) {
+          return true;
+        }
+        return false;
       } catch (error) {
-        alert("비밀번호 업데이트 실패:", error);
+        console.log("비밀번호 업데이트 실패:", error);
+        throw error;
+      }
+    }
+
+    async function deleteUser(userpwd) {
+      try {
+        const url = `${DOMAIN_URL}/auth`;
+        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
+
+        const data = {
+          userid: userInfo.value.id,
+          username: userInfo.value.name,
+          email: userInfo.value.email,
+          userpwd,
+          joindate: "",
+        };
+
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "delete",
+          url,
+          data,
+        };
+
+        console.log("회원탈퇴 옵션:", options);
+        const res = await axios(options);
+        if (res.status == 200) {
+          console.log("회원탈퇴 성공:", res);
+          return true;
+        }
+        return false;
+      } catch (error) {
+        console.log("회원탈퇴 실패:", error);
+        throw error;
       }
     }
 
     return {
       userInfo,
       accessToken,
-      getCookies,
-      removeCookie,
       checkValidKey,
       requestVerifyEmail,
       sendVerifyCode,
@@ -244,6 +274,7 @@ export const useUserStore = defineStore(
       $reset,
       editUserName,
       editUserPassword,
+      deleteUser,
     };
   },
   {

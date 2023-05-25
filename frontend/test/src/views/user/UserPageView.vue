@@ -85,7 +85,7 @@
           <template v-else>
             <div @click="goToEditName" class="item">이름 수정하기</div>
             <div @click="goToEditPassword" class="item">비밀번호 수정하기</div>
-            <div class="item">탈퇴하기</div>
+            <div @click="deleteUser" class="item">탈퇴하기</div>
           </template>
         </div>
       </section>
@@ -96,6 +96,7 @@
 import ProjectIconCompVue from "@/components/ProjectIconComp.vue";
 import { useUserStore } from "@/store/userStore";
 import { useBoardStore } from "@/store/boardStore";
+import jwt_decode from "jwt-decode";
 export default {
   components: {
     ProjectIconCompVue,
@@ -142,9 +143,16 @@ export default {
           if (this.nextName == "") {
             alert("값을 입력해주세요");
           } else {
-            await this.userStore.editUserName(this.nextName);
-            alert("이름 업데이트 성공!");
+            const res = await this.userStore.editUserName(this.nextName);
             this.isEditName = false;
+            if (res) {
+              const userInfo = jwt_decode(this.userStore.accessToken);
+              this.userStore.userInfo.id = userInfo.id;
+              this.userStore.userInfo.name = userInfo.name;
+              this.userStore.userInfo.email = userInfo.email;
+
+              alert("이름 업데이트 성공!");
+            }
           }
         } else if (this.isEditPassword) {
           if (this.currentPassword == "") {
@@ -152,15 +160,38 @@ export default {
           } else if (this.nextPassword1 != this.nextPassword2) {
             alert("입력하신 비밀번호를 다시 확인해주세요.");
           } else {
-            await this.userStore.editUserPassword(this.nextPassword1);
-            this.isEditPassword = false;
-            this.userStore.$reset();
+            const res = await this.userStore.editUserPassword(
+              this.currentPassword,
+              this.nextPassword1
+            );
+            if (res) {
+              alert("비밀번호 변경 성공");
+              this.isEditPassword = false;
+              this.userStore.$reset();
+              this.$router.push({ name: "home" });
+            }
           }
         } else {
           return;
         }
       } catch (error) {
         console.log("로그인 에러");
+      }
+    },
+    async deleteUser() {
+      const password = prompt("비밀번호를 입력해주세요");
+      if (password == null) return;
+      if (password == "") {
+        alert("비밀번호를 입력해주세요");
+        return;
+      }
+      const res = await this.userStore.deleteUser(password);
+      if (res) {
+        alert("탈퇴 성공");
+        this.userStore.$reset();
+        this.$outer.push({ name: "home" });
+      } else {
+        alert("탈퇴 실패");
       }
     },
   },
@@ -269,10 +300,8 @@ export default {
       font-weight: bold;
       border-left: 3px dashed $background;
       .icon {
-        width: 2rem;
-        color: $background;
-
-        padding: 1rem 0;
+        width: max-content;
+        transform: scale(2);
       }
       table {
         width: 100%;

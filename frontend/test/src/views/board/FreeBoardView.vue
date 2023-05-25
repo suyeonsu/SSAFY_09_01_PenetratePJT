@@ -79,7 +79,7 @@ export default {
 <style lang="scss" scoped>
 .container {
   height: 90vh;
-  width: 50%;
+  width: 70%;
   margin: 0 auto;
   padding-top: 2rem;
   box-sizing: border-box;
