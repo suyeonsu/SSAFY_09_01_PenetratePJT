@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ssafy.group5.dto.Attraction;
+import com.ssafy.group5.dto.Myplace;
 import com.ssafy.group5.model.service.AttractionService;
 
 import io.swagger.annotations.ApiImplicitParam;
@@ -60,9 +61,20 @@ public class AttractionController {
 	
 	@GetMapping("/detail")
 	@ApiOperation(value = "관광지 상세 조회", notes = "관광지 id를 통해 관광지를 상세 조회한다.")
-	@ApiImplicitParam(name = "id", value = "관광지 id", required = true, dataType = "int", paramType = "query")
-	public ResponseEntity<Attraction> getAttractionDetail(@RequestParam int id) throws SQLException {
-		return new ResponseEntity<Attraction>(attractionService.getAttractionDetail(id), HttpStatus.OK);
+	@ApiImplicitParams({
+		@ApiImplicitParam(name = "attractionId", value = "관광지 id", required = true, dataType = "int", paramType = "query"),
+		@ApiImplicitParam(name = "userId", value = "사용자 id", required = true, dataType = "String", paramType = "query")
+	})
+	public ResponseEntity<?> getAttractionDetail(@RequestParam int attractionId, @RequestParam String userId) throws SQLException {
+		Myplace param = new Myplace();
+		param.setUserId(userId);
+		param.setAttractionId(attractionId);
+		Attraction myplace = attractionService.getMyplace(param);
+		
+		Map<String, Object> resultMap = new HashMap<>();
+		resultMap.put("myplace", myplace != null ? true : false);
+		resultMap.put("attraction", attractionService.getAttractionDetail(attractionId));
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}
 
 }

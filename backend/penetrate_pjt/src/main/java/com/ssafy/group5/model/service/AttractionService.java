@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.ssafy.group5.dto.Attraction;
+import com.ssafy.group5.dto.Myplace;
 
 public interface AttractionService {
 
@@ -16,6 +17,10 @@ public interface AttractionService {
 	/**
 	 * 관광지 상세 조회
 	 */
-	Attraction getAttractionDetail(int contentId) throws SQLException;
+	Attraction getAttractionDetail(int attractionId) throws SQLException;
 
+	/**
+	 * 북마크 장소 조회
+	 */
+	Attraction getMyplace(Myplace myplace);
 }

@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.group5.dto.Attraction;
+import com.ssafy.group5.dto.Myplace;
 import com.ssafy.group5.model.mapper.AttractionMapper;
 
 @Service
@@ -22,8 +23,13 @@ public class AttractionServiceImpl implements AttractionService {
 	}
 
 	@Override
-	public Attraction getAttractionDetail(int contentId) throws SQLException {
-		return attractionMapper.attractionDetail(contentId);
+	public Attraction getAttractionDetail(int attractionId) throws SQLException {
+		return attractionMapper.attractionDetail(attractionId);
+	}
+
+	@Override
+	public Attraction getMyplace(Myplace myplace) {
+		return attractionMapper.getMyplace(myplace);
 	}
 
 }
