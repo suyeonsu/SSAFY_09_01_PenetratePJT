@@ -32,19 +32,25 @@
         <table>
           <tr>
             <th>아이디</th>
-            <td>SSAFY</td>
+            <td>{{ userStore.userInfo.id }}</td>
           </tr>
           <tr>
-            <th>닉네임</th>
-            <td>SSAFY</td>
+            <th>이름</th>
+            <td>{{ userStore.userInfo.name }}</td>
           </tr>
           <tr>
             <th>이메일</th>
-            <td>ssafy@naver.com</td>
+            <td>{{ userStore.userInfo.email }}</td>
           </tr>
         </table>
         <div class="menu">
-          <div class="item">수정하기</div>
+          <router-link
+            :to="{
+              name: 'join',
+            }"
+            class="item"
+            >수정하기</router-link
+          >
           <div class="item">탈퇴하기</div>
         </div>
       </section>
@@ -53,9 +59,16 @@
 </template>
 <script>
 import ProjectIconCompVue from "@/components/ProjectIconComp.vue";
+import { useUserStore } from "@/store/userStore";
 export default {
   components: {
     ProjectIconCompVue,
+  },
+  setup() {
+    const userStore = useUserStore();
+    return {
+      userStore,
+    };
   },
 };
 </script>
@@ -82,7 +95,7 @@ export default {
       display: flex;
       flex-direction: column;
       .title {
-        margin: 1rem 40% 1rem 0;
+        margin: 1rem 40% 0 0;
         padding: 0.5rem 1rem 0.5rem 5%;
         background: $primary;
         font-size: 2rem;

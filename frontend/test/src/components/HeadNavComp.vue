@@ -28,7 +28,6 @@
 import { useUserStore } from "@/store/userStore";
 import ButtonComp from "./ButtonComp.vue";
 import ProjectIconComp from "./ProjectIconComp.vue";
-import { mapStores } from "pinia";
 
 export default {
   name: "HelloWorld",
@@ -36,13 +35,10 @@ export default {
     ProjectIconComp,
     ButtonComp,
   },
-  created() {
+  mounted() {
     // 로그인 유지 기능
-    const loginedUser = window.localStorage.getItem("userInfo");
-    // console.log(loginedUser);
-    if (loginedUser != null) {
-      this.userStore.userInfo = JSON.parse(loginedUser);
-      // console.log(this.userStore.userInfo);
+    if (!this.userStore.isRemember) {
+      this.userStore.$reset();
     }
   },
   setup() {
@@ -53,11 +49,8 @@ export default {
   },
   methods: {
     logout() {
-      // 로그아웃
-      this.userStore.userInfo.id = "";
-      this.userStore.userInfo.name = "";
-      window.localStorage.removeItem("userInfo");
-      // 쿠키도 삭제해야됨.
+      console.log("로그아웃");
+      this.userStore.$reset();
     },
   },
 };

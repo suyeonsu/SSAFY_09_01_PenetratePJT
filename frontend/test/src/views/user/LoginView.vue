@@ -2,16 +2,18 @@
   <div class="login">
     <div class="container">
       <ProjectIconCompVue class="logo" />
-      <form class="login-form" @submit.prevent="submitHandler">
-        <InputCompVue required @changeValue="setName">아이디</InputCompVue>
+      <form class="login-form" @submit.prevent="login">
+        <InputCompVue required @changeValue="setId">아이디</InputCompVue>
         <InputCompVue required type="password" @changeValue="setPassword"
           >비밀번호</InputCompVue
         >
         <label class="checkbox">
-          <input type="checkbox" v-model="user.isRemember" />
+          <input type="checkbox" v-model="isRemember" />
           로그인 유지
         </label>
-        <button class="main-button">로그인</button>
+        <button :disabled="isError" class="main-button">
+          {{ isError ? "모두 채우고 로그인하기" : "로그인" }}
+        </button>
         <div class="sub-menu">
           <router-link class="item" :to="{ name: 'findPassword' }"
             >비밀번호 찾기</router-link
@@ -29,7 +31,6 @@
 import InputCompVue from "@/components/InputComp.vue";
 import ProjectIconCompVue from "@/components/ProjectIconComp.vue";
 import { useUserStore } from "@/store/userStore";
-import { mapStores } from "pinia";
 import jwt_decode from "jwt-decode";
 
 export default {
@@ -38,8 +39,9 @@ export default {
       user: {
         id: "",
         password: "",
-        isRemember: false,
       },
+      isRemember: false,
+      isError: true,
     };
   },
   setup() {
@@ -52,34 +54,34 @@ export default {
     InputCompVue,
     ProjectIconCompVue,
   },
-  methods: {
-    submitHandler() {
-      // 시작: 로그인 요청 로직
-      // 끝: 로그인 요청 로직
-
-      // 시작: 임시 로그인 기능
-      const tmpJWT =
-        "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6InN1eWVvbiIsIm5hbWUiOiLsiJjsl7AiLCJleHAiOjE2ODYwNTcyMDh9.1y5YDbHNizE06C-IM6B_OlzuX8MPMovK8IorRPRx61M";
-      const userInfo = jwt_decode(tmpJWT);
-      this.userStore.userInfo.id = userInfo.id;
-      this.userStore.userInfo.name = userInfo.name;
-      // 끝: 임시 로그인 기능
-
-      this.userStore.accessToken = tmpJWT;
-      // 시작: 로그인 유지
-      if (this.user.isRemember) {
-        window.localStorage.setItem(
-          "userInfo",
-          JSON.stringify(this.userStore.userInfo)
-        );
+  watch: {
+    "user.password"(now) {
+      if (now != "" && this.user.id != "") {
+        this.isError = false;
       } else {
-        window.localStorage.removeItem("userID");
+        this.isError = true;
       }
-      // 끝: 로그인 유지
-      this.$router.push({ name: "home" });
     },
+  },
+  methods: {
+    async login() {
+      try {
+        const res = await this.userStore.login(this.user);
+        const userInfo = jwt_decode(res);
+        console.log("디코딩된 유저정보:", userInfo);
+        this.userStore.userInfo.id = userInfo.id;
+        this.userStore.userInfo.name = userInfo.name;
+        this.userStore.userInfo.email = userInfo.email;
+        this.userStore.accessToken = res;
+        this.userStore.isRemember = this.isRemember;
 
-    setName(value) {
+        console.log("로그인 성공:", res.data);
+        this.$router.push({ name: "home" });
+      } catch (error) {
+        console.log("로그인 실패:", error);
+      }
+    },
+    setId(value) {
       this.user.id = value;
     },
     setPassword(value) {
@@ -125,6 +127,10 @@ export default {
         color: white;
         font-weight: bold;
         cursor: pointer;
+        &:disabled {
+          background: gray;
+          cursor: auto;
+        }
       }
       .sub-menu {
         display: flex;

@@ -4,13 +4,15 @@
       <main>
         <header>
           <h1 class="title">
-            <InputCompVue :defaultMessage="boardStore.nowPost.subject"
+            <InputCompVue
+              :defaultMessage="boardStore.nowPost.subject"
+              @changeValue="setTitle"
               >제목</InputCompVue
             >
           </h1>
           <div class="info">
             <div>조회수: {{ boardStore.nowPost.hit }}</div>
-            <div>
+            <div v-if="localeTime">
               작성시간:
               {{ localeTime }}
             </div>
@@ -18,8 +20,12 @@
           </div>
           <div class="controllers">
             <template v-if="isauthor">
-              <ButtonCompVue @click="savePosting" class="btn"
-                >저장하기</ButtonCompVue
+              <ButtonCompVue v-if="isNew" @click="posting" class="btn"
+                >글쓰기</ButtonCompVue
+              >
+
+              <ButtonCompVue v-else @click="editArticle" class="btn"
+                >수정완료</ButtonCompVue
               >
 
               <ButtonCompVue @click="removePosting" class="btn"
@@ -65,19 +71,22 @@ export default {
   },
   computed: {
     localeTime() {
-      const options = {
-        year: "numeric",
-        month: "numeric",
-        day: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        second: "numeric",
-        hour12: false,
-        timeZone: "UTC",
-      };
-      return new Intl.DateTimeFormat("Ko-KR", options).format(
-        this.boardStore.nowPost.regtime
-      );
+      if (this.boardStore.nowPost.regtime == "") return "";
+      else {
+        const options = {
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+          hour: "numeric",
+          minute: "numeric",
+          second: "numeric",
+          hour12: false,
+          timeZone: "UTC",
+        };
+        return new Intl.DateTimeFormat("Ko-KR", options).format(
+          new Date(this.boardStore.nowPost.regtime)
+        );
+      }
     },
     isauthor() {
       if (this.userStore.userInfo.id != "") {
@@ -87,30 +96,63 @@ export default {
       }
       return false;
     },
-  },
-  created() {
-    this.boardStore.getPostingData(this.$route.params.id);
+    isNew() {
+      if (this.boardStore.nowPost.articleno == 0) return true;
+      else return false;
+    },
   },
   methods: {
-    savePosting() {
-      const flag = confirm("저장하시겠습니까?");
+    setTitle(data) {
+      this.boardStore.nowPost.subject = data;
+    },
+    async posting() {
+      const flag = confirm("등록하시겠습니까?");
       if (flag) {
-        console.log("저장함");
-        this.$router.push({
-          name: "freeBoardDetail",
-          params: { id: this.$route.params.id },
-        });
+        try {
+          await this.boardStore.postArticle();
+          console.log("등록성공");
+          this.$router.push({
+            name: "freeBoardList",
+            params: { pageNo: 1 },
+          });
+        } catch (error) {
+          alert("등록실패: ", error);
+        }
       } else {
         console.log("취소됨");
       }
     },
-    removePosting() {
-      const flag = confirm("정말 삭제하시겠습니까?");
+    async editArticle() {
+      const flag = confirm("저장하시겠습니까?");
       if (flag) {
-        console.log("삭제됨");
-        this.$router.push({ name: "freeBoard" });
+        try {
+          await this.boardStore.editArticle();
+          console.log("수정성공");
+          this.$router.push({
+            name: "freeBoardDetail",
+            params: { id: this.boardStore.nowPost.articleno },
+          });
+        } catch (error) {
+          alert("수정실패: ", error);
+        }
       } else {
         console.log("취소됨");
+      }
+    },
+    async removePosting() {
+      try {
+        const flag = confirm("정말 삭제하시겠습니까?");
+        if (flag) {
+          await this.boardStore.deleteArticle(
+            this.boardStore.nowPost.articleno
+          );
+          console.log("삭제됨");
+          this.$router.push({ name: "freeBoard" });
+        } else {
+          console.log("취소됨");
+        }
+      } catch (error) {
+        alert("삭제실패: ", error);
       }
     },
     goToBack() {

@@ -60,7 +60,7 @@ const routes = [
     ],
   },
   {
-    path: "/board/edit/:id",
+    path: "/board/edit",
     name: "freeBoardEdit",
     component: FreeBoardEditViewVue,
   },

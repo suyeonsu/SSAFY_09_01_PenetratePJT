@@ -1,19 +1,22 @@
 <template>
   <ul class="pagenation">
     <div
-      @click="pagenation(Math.max(1, this.startNo - 10))"
-      class="item"
-      v-if="isNotFirstPage">
+      v-if="pagenationInfo.navigateFirstPage != 1"
+      @click="goToPrivious"
+      class="item">
       <font-awesome-icon :icon="['fas', 'chevron-left']" />
     </div>
-    <li v-for="n of pageNo" :key="n">
+    <li v-for="n of pagenationInfo.navigatepageNums" :key="n">
       <div
         @click="goToPage(n)"
-        :class="{ item: true, active: isActivePage(n) }">
+        :class="{ item: true, active: n == pagenationInfo.pageNum }">
         {{ n }}
       </div>
     </li>
-    <div @click="pagenation(this.endNo + 1)" class="item" v-if="isNotLastPage">
+    <div
+      v-if="pagenationInfo.navigateLastPage != pagenationInfo.pages"
+      @click="goToNext"
+      class="item">
       <font-awesome-icon :icon="['fas', 'chevron-right']" />
     </div>
   </ul>
@@ -21,58 +24,24 @@
 
 <script>
 export default {
-  data() {
-    return {
-      startNo: 1,
-      endNo: 10,
-      totalPageNo: 1,
-      pageNo: [],
-    };
-  },
-  computed: {
-    isNotFirstPage() {
-      return this.startNo != 1;
-    },
-    isNotLastPage() {
-      return this.endNo != this.totalPageNo;
-    },
-  },
-  created() {
-    // 전체 게시글 개수로부터 페이지 개수 구하기
-    this.totalPageNo = Math.ceil(this.pagesInfo.totalListLength / 10);
-    // 현재 페이지 번호로부터 시작 페이지 번호 구하기.
-    const startNo =
-      this.pagesInfo.currentPageNo - (this.pagesInfo.currentPageNo % 10) + 1;
-    // 페이지 번호 생성하기
-    this.pagenation(startNo);
-  },
-
   props: {
-    pagesInfo: {
-      currentPageNo: Number,
-      parentRoot: String,
-      totalListLength: Number,
+    pagenationInfo: {
+      type: Object,
     },
   },
   methods: {
-    goToPage(n) {
-      this.$router.push({
-        name: this.pagesInfo.parentRoot,
-        params: { pageNo: n },
-      });
+    goToPage(pageNo) {
+      this.$router.push({ name: "freeBoardList", params: { pageNo } });
     },
-    isActivePage(n) {
-      return this.$route.params.pageNo == n;
+    goToPrivious() {
+      let prev = this.pagenationInfo.navigateFirstPage;
+      if (prev != 1) prev--;
+      this.goToPage(prev);
     },
-    /** 페이지 정보 불러오기 */
-    pagenation(startNo) {
-      this.pageNo.length = 0;
-      this.startNo = startNo;
-      // 시작 페이지 번호로부터 끝 페이지 번호 구하기
-      this.endNo = Math.min(this.startNo + 9, this.totalPageNo);
-      for (let i = this.startNo; i <= this.endNo; i++) {
-        this.pageNo.push(i);
-      }
+    goToNext() {
+      let next = this.pagenationInfo.navigateLastPage;
+      if (next != this.pagenationInfo.pages) next++;
+      this.goToPage(next);
     },
   },
 };

@@ -9,7 +9,9 @@
           :class="{ 'input-element': true, error }"
           :type="type"
           :value="msg"
+          :readonly="readonly"
           :required="required"
+          :disabled="disabled"
           @input="inputHandler" />
       </label>
       <div v-if="requiredError" class="error-required">
@@ -48,6 +50,14 @@ export default {
     defaultMessage: {
       type: String,
       default: "",
+    },
+    disabled: {
+      type: Boolean,
+      default: false,
+    },
+    readonly: {
+      type: Boolean,
+      default: false,
     },
   },
   computed: {
@@ -115,6 +125,10 @@ export default {
       &:focus {
         border: 1px solid $primary;
         outline: none;
+      }
+      &:disabled,
+      &:read-only {
+        background: lightgray;
       }
       &.error {
         // 에러 발생 시 input 요소

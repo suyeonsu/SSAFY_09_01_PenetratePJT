@@ -22,45 +22,70 @@
         </template>
       </tbody>
     </table>
-    <PagenationCompVue :pagesInfo="pagesInfo" />
+    <footer>
+      <PagenationCompVue class="center" :pagenationInfo="pagenationInfo" />
+      <ButtonCompVue
+        v-if="userStore.accessToken"
+        class="right"
+        @click="goToWrite"
+        >글쓰기</ButtonCompVue
+      >
+    </footer>
   </main>
 </template>
 
 <script>
 import { useBoardStore } from "@/store/boardStore";
 import PagenationCompVue from "@/components/PagenationComp.vue";
+import ButtonCompVue from "@/components/ButtonComp.vue";
+import { useUserStore } from "@/store/userStore";
 export default {
-  data() {
-    return {
-      pagesInfo: {
-        currentPageNo: 1,
-        parentRoot: "freeBoardList",
-        totalListLength: 1,
-      },
-    };
-  },
   components: {
     PagenationCompVue,
+    ButtonCompVue,
   },
   setup() {
     const boardStore = useBoardStore();
-    return { boardStore };
+    const userStore = useUserStore();
+    return { boardStore, userStore };
   },
-  created() {
-    this.getListInfo(this.$route.params.pageNo);
+  async created() {
+    await this.getListInfo(this.$route.params.pageNo);
   },
-  beforeRouteUpdate(to) {
-    this.getListInfo(to.params.pageNo);
+  async beforeRouteUpdate(to) {
+    await this.getListInfo(to.params.pageNo);
+  },
+  computed: {
+    pagenationInfo() {
+      return {
+        currentPageNo: this.$route.params.pageNo,
+        parentRoot: "freeBoardList",
+        pageNum: this.boardStore.pagenationInfo.pageNum,
+        pages: this.boardStore.pagenationInfo.pages,
+        navigatepageNums: this.boardStore.pagenationInfo.navigatepageNums,
+        navigateFirstPage: this.boardStore.pagenationInfo.navigateFirstPage,
+        navigateLastPage: this.boardStore.pagenationInfo.navigateLastPage,
+      };
+    },
+  },
+  watch: {
+    "boardStore.sort"() {
+      this.boardStore.loadFreeBoardList(1);
+    },
   },
   methods: {
     goToDetail(articleno) {
       this.$router.push({ name: "freeBoardDetail", params: { id: articleno } });
     },
-    getListInfo(currentPageNo) {
+
+    async getListInfo(currentPageNo) {
       this.boardStore.setToday();
-      this.boardStore.getPostListData(currentPageNo);
-      this.pagesInfo.currentPageNo = currentPageNo;
-      this.pagesInfo.totalListLength = this.boardStore.totalListLength;
+      await this.boardStore.loadFreeBoardList(currentPageNo);
+      console.log("페이지네이션:", this.pagenationInfo);
+    },
+    goToWrite() {
+      this.boardStore.resetDetail();
+      this.$router.push({ name: "freeBoardEdit" });
     },
   },
 };
@@ -108,6 +133,23 @@ main {
       td:not(:nth-child(2)) {
         text-align: center;
       }
+    }
+  }
+  footer {
+    width: 100%;
+    position: relative;
+    padding-top: 1rem;
+    padding-bottom: 5rem;
+    display: flex;
+    align-items: center;
+    .center {
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+    .right {
+      position: absolute;
+      right: 0;
     }
   }
 }

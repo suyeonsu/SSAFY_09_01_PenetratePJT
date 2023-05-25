@@ -7,18 +7,15 @@
     <main>
       <section>
         <article class="search">
-          <form>
-            <select class="range" v-model="selectedSearch">
+          <form @submit.prevent="boardStore.loadFreeBoardList(1)">
+            <select class="range" v-model="boardStore.filter">
               <optgroup label="검색기준">
-                <option
-                  v-for="pivot of searchPivot"
-                  :key="pivot.en"
-                  :value="pivot.en">
-                  {{ pivot.ko }}
+                <option v-for="item of filter" :key="item.en" :value="item.en">
+                  {{ item.ko }}
                 </option>
               </optgroup>
             </select>
-            <input type="text" />
+            <input type="text" v-model="boardStore.keywords" />
             <button>
               <font-awesome-icon
                 class="icon"
@@ -28,13 +25,10 @@
         </article>
         <article class="sort">
           <span>정렬기준</span>
-          <select v-model="selectedSort">
+          <select v-model="boardStore.sort">
             <optgroup label="정렬기준">
-              <option
-                v-for="pivot of sortPivot"
-                :key="pivot.en"
-                :value="pivot.en">
-                {{ pivot.ko }}
+              <option v-for="item of sort" :key="item.en" :value="item.en">
+                {{ item.ko }}
               </option>
             </optgroup>
           </select>
@@ -47,15 +41,14 @@
 
 <script>
 import { useBoardStore } from "@/store/boardStore";
-import { useUserStore } from "@/store/userStore";
 export default {
   data() {
     return {
-      sortPivot: [
-        { en: "hit", ko: "조회수순" },
+      sort: [
         { en: "regtime", ko: "최신순" },
+        { en: "hit", ko: "조회수순" },
       ],
-      searchPivot: [
+      filter: [
         {
           en: "subject",
           ko: "제목",
@@ -69,19 +62,11 @@ export default {
           ko: "작성자",
         },
       ],
-      selectedSort: "regtime",
-      selectedSearch: "subject",
     };
   },
   setup() {
     const boardStore = useBoardStore();
     return { boardStore };
-  },
-  watch: {
-    selectedSort(nowPivot) {
-      console.log(nowPivot);
-      // this.boardStore.sortPostList(nowPivot);
-    },
   },
   methods: {
     goToDetail(articleno) {

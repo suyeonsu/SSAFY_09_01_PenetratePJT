@@ -18,7 +18,7 @@
                 >수정하기</ButtonCompVue
               >
 
-              <ButtonCompVue @click="removePosting" class="btn"
+              <ButtonCompVue @click="deleteArticle" class="btn"
                 >삭제하기</ButtonCompVue
               >
             </template>
@@ -69,7 +69,7 @@ export default {
         timeZone: "UTC",
       };
       return new Intl.DateTimeFormat("Ko-KR", options).format(
-        this.boardStore.nowPost.regtime
+        new Date(this.boardStore.nowPost.regtime)
       );
     },
     isauthor() {
@@ -82,7 +82,7 @@ export default {
     },
   },
   created() {
-    this.boardStore.getPostingData(this.$route.params.id);
+    this.boardStore.loadFreeBoardDetail(this.$route.params.id);
   },
   methods: {
     editPosting() {
@@ -91,17 +91,17 @@ export default {
         console.log("수정페이지로 이동");
         this.$router.push({
           name: "freeBoardEdit",
-          params: { id: this.$route.params.id },
         });
       } else {
         console.log("취소됨");
       }
     },
-    removePosting() {
+    async deleteArticle() {
       const flag = confirm("정말 삭제하시겠습니까?");
       if (flag) {
+        await this.boardStore.deleteArticle(this.$route.params.id);
         console.log("삭제됨");
-        this.$router.push({ name: "freeBoard" });
+        this.$router.push({ name: "freeBoardList", params: { pageNo: 1 } });
       } else {
         console.log("취소됨");
       }
