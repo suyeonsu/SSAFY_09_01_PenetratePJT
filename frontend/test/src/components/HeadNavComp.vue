@@ -68,6 +68,7 @@ export default {
   padding: 1rem 5%;
   height: 10vh;
   box-sizing: border-box;
+  background: $background;
   nav {
     a {
       color: $primary;

@@ -30,6 +30,7 @@ export default {};
   height: 90vh;
   position: relative;
   box-sizing: border-box;
+  background: $background;
   .title {
     position: absolute;
     left: 6rem;
@@ -38,6 +39,7 @@ export default {};
     h3 {
       font-size: 1.2rem;
       margin-bottom: 1.5rem;
+      font-family: "S-CoreDream-3Light";
     }
     h1 {
       font-size: 5rem;

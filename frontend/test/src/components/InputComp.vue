@@ -98,7 +98,7 @@ export default {
 .input-component {
   .container {
     position: relative;
-
+    font-family: "S-CoreDream-3Light";
     .title {
       position: absolute;
       left: 1rem;

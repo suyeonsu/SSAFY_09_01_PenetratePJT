@@ -29,9 +29,9 @@
           >
           <button
             @click.prevent="requestVerifyEmail"
-            :disabled="emailConfirmed"
+            :disabled="emailConfirmed || emailSended"
             class="verify-button">
-            {{ emailConfirmed ? "인증됨" : "인증하기" }}
+            {{ emailVerifyMessage }}
           </button>
         </div>
         <div v-if="emailVerifyTime != 0 && !emailConfirmed" class="verify">
@@ -97,6 +97,7 @@ export default {
         password: "",
       },
       idConfirmed: false, // 아이디 사용 확정
+      emailSended: false, // 인증 이메일 보냄
       emailConfirmed: false, // 이메일 사용 확정
       confirmPassword: "", // 비밀번호 확인
       emailVerifyCode: "", // 이메일 인증 코드
@@ -106,6 +107,15 @@ export default {
       isError: true, // 에러 발생 시 회원가입 버튼 비활성화
       isValidEmail: false, // 이메일 인증 여부
     };
+  },
+  computed: {
+    emailVerifyMessage() {
+      if (this.emailSended) {
+        return "전송됨";
+      } else if (this.emailConfirmed) {
+        return "인증완료";
+      } else return "인증하기"; // 이메일 인증 버튼 메세지
+    },
   },
   watch: {
     confirmPassword(now) {
@@ -186,19 +196,20 @@ export default {
         return;
       }
       try {
+        this.emailSended = true;
         const dupRes = await this.userStore.checkValidKey(
           "email",
           this.user.email
         );
         if (dupRes == "duplicated") {
           alert("이메일이 중복되었습니다. 다른 이메일을 사용해주세요.");
+          this.emailSended = false;
           return;
         } else {
           const res = await this.userStore.requestVerifyEmail(
             this.user.email,
             "register"
           );
-          // const res = true;
           if (res) {
             const time = 300;
             this.emailVerifyTime = time; // 이메일 인증 시간 (초)
@@ -219,6 +230,7 @@ export default {
       } catch (error) {
         this.emailVerifyTimeMessage = "";
         clearInterval(this.timer);
+        this.emailSended = false;
         alert("이메일 인증요청 에러: ", error);
       }
     },
@@ -228,6 +240,7 @@ export default {
       const res = this.userStore.sendVerifyCode(this.emailVerifyCode);
       if (res) {
         alert("인증 성공");
+
         this.emailVerifyTime = 0;
         this.emailVerifyTimeMessage = "";
         clearInterval(this.timer);
@@ -235,6 +248,7 @@ export default {
       } else {
         alert("인증 실패");
       }
+      this.emailSended = false;
     },
     async join() {
       try {
