@@ -141,8 +141,16 @@ public class AuthController {
 	
 	@DeleteMapping
 	@ApiOperation(value = "회원 탈퇴", notes = "비밀번호가 일치할 경우 회원 탈퇴를 진행한다.")
-	public void withdrawal(@RequestBody User user) {
-		userService.deleteUser(user);
+	public ResponseEntity<?> withdrawal(@RequestBody User user) {
+		User userInfo = userService.getUserById(user);
+		Map<String, Object> resultMap = new HashMap<>();
+		if(userInfo != null) {
+			userService.deleteUser(user);
+			resultMap.put("message", "SUCCESS");
+		} else {
+			resultMap.put("message", "FAIL");
+		}
+		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.ACCEPTED);
 	}
 	 
 }

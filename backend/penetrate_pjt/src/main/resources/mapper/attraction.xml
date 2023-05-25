@@ -16,9 +16,9 @@
 
 	<!-- 관광지 목록 조회 -->
 	<select id="attractionList" parameterType="Map" resultMap="AttractionMap">
-	  SELECT content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) total_score, 
-		  	6371 * acos(cos(radians(#{curlatitude})) * cos(radians(latitude)) * cos(radians(longitude)-radians(#{curlongitude})) + sin(radians(#{curlatitude})) * sin(radians(latitude))) distance
-	  FROM attraction a join rating r on a.content_id = r.attraction_id
+		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/if((star1 + star2 + star3 + star4 + star5) = 0, 1, star1 + star2 + star3 + star4 + star5) total_score, 
+			6371 * acos(cos(radians(36.35397185658055)) * cos(radians(latitude)) * cos(radians(longitude)-radians(127.34673325266509)) + sin(radians(36.35397185658055)) * sin(radians(latitude))) as distance
+		FROM attraction a join rating r on a.content_id = r.attraction_id
 	  <where>
 	    <if test="type != null">
 	      content_type_id = #{type}
@@ -35,24 +35,23 @@
 	      AND gugun_code = #{gugun}
 	    </if>
 	  </where>
-	  order by 
 	  <if test="sort != null and sort != ''">
 		  <choose>
 		  	<!-- 거리순 -->
 		  	<when test="sort = 'distance'">
-		  		distance, content_id
+		  		order by distance, content_id
 		  	</when>
 		  	<!-- 조회수순 -->
-		  	<when test="sort = 'readcount'">
-		  		readcount desc, content_id
+		  	<when test="sort = 'readcount">
+		  		order by readcount desc, content_id
 		  	</when>
 		  	<!-- 이름순 -->
 		  	<when test="sort = 'title'">
-		  		title, content_id
+		  		order by title, content_id
 		  	</when>
 		  	<!-- 평점순 -->
 		  	<when test="sort = 'star'">
-		  		total_score desc, content_id
+		  		order by total_score desc, content_id
 		  	</when>
 		  </choose>
 	  </if>
@@ -60,7 +59,7 @@
 	
 	<!-- 관광지 상세 조회 -->
 	<select id="attractionDetail" parameterType="int" resultMap="AttractionMap">
-		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/(star1 + star2 + star3 + star4 + star5) total_score
+		select content_id, content_type_id, title, addr1, addr2, zipcode, tel, first_image, first_image2, readcount, sido_code, gugun_code, latitude, longitude, overview, ifnull(star1, 0) star1 , ifnull(star2, 0) star2, ifnull(star3, 0) star3, ifnull(star4, 0) star4, ifnull(star5, 0) star5, (star1*1 + star2*2 + star3*3 + star4*4 + star5*5)/if((star1 + star2 + star3 + star4 + star5) = 0, 1, star1 + star2 + star3 + star4 + star5) total_score
 		from attraction join rating on content_id = attraction_id
 		where content_id=#{attractionId}
 	</select>

@@ -73,6 +73,7 @@ public class AttractionController {
 		
 		Map<String, Object> resultMap = new HashMap<>();
 		resultMap.put("myplace", myplace != null ? true : false);
+		log.debug("attractionController의 detail. db에서 가져온 myplace: {}", myplace);
 		resultMap.put("attraction", attractionService.getAttractionDetail(attractionId));
 		return new ResponseEntity<Map<String, Object>>(resultMap, HttpStatus.OK);
 	}
