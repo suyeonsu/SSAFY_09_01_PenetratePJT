@@ -121,6 +121,7 @@ main {
       border-bottom: 1px solid $primary;
     }
     tbody {
+      font-family: "S-CoreDream-3Light";
       tr {
         &:hover {
           background: $primary;

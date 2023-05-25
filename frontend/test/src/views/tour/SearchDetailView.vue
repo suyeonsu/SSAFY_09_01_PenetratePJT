@@ -19,13 +19,24 @@
         </div>
       </header>
       <address>
-        <div class="address-item">
+        <div class="address-item rating">
           <font-awesome-icon :icon="['fas', 'star']" />
           {{ placeInfo.totalScore }}
-          <button @click="rating">5점주기</button>
-          <!-- <StarRateCompVue :rate="placeInfo.totalScore"> -->
+          <button v-if="!isRating" @click="startRating">별점 주기</button>
+          <template v-else>
+            <form @submit.prevent="rating">
+              <select name="rate" v-model="rate">
+                <option value="5">5점</option>
+                <option value="4">4점</option>
+                <option value="3">3점</option>
+                <option value="2">2점</option>
+                <option value="1">1점</option>
+              </select>
+              <button>저장하기</button>
+            </form>
+          </template>
         </div>
-        <div class="address-item">
+        <div v-if="placeInfo.addr1" class="address-item">
           <font-awesome-icon :icon="['fas', 'location-dot']" />
           {{ placeInfo.addr1 }}
         </div>
@@ -49,7 +60,6 @@
 
 <script>
 import { useTourStore } from "@/store/tourStore";
-// import StarRateCompVue from "@/components/StarRateComp.vue";
 export default {
   setup() {
     const tourStore = useTourStore();
@@ -57,11 +67,14 @@ export default {
       tourStore,
     };
   },
-  // components: {
-  //   StarRateCompVue,
-  // },
+  data() {
+    return {
+      rate: 5,
+      isRating: false,
+    };
+  },
   created() {
-    this.tourStore.getDetail();
+    this.tourStore.getDetail(this.$route.params.id);
   },
   computed: {
     placeInfo() {
@@ -82,14 +95,14 @@ export default {
   },
   unmounted() {
     this.tourStore.deactivatePlace();
-
-    // console.log("unmounted()");
-    // this.$router.replace("/tour");
   },
   methods: {
+    startRating() {
+      this.isRating = true;
+    },
     async rating() {
-      await this.tourStore.rating(this.placeInfo.contentId, 5);
-      alert("별점 주기 성공");
+      this.isRating = false;
+      await this.tourStore.rating(this.placeInfo.contentId, this.rate);
     },
     async bookmarking() {
       if (this.bookmarked) {
@@ -154,6 +167,35 @@ export default {
     address {
       width: 100%;
       font-family: "S-CoreDream-3Light";
+      .address-item {
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        &.rating {
+          button {
+            background: $background;
+            color: $primary;
+            border: 1px solid $primary;
+            border-radius: 1rem;
+            margin-left: 0.5rem;
+            cursor: pointer;
+            &:hover {
+              background: $primary;
+              color: $background;
+            }
+          }
+          form {
+            display: flex;
+            margin-left: 0.5rem;
+            label {
+              cursor: pointer;
+              input {
+                appearance: none;
+              }
+            }
+          }
+        }
+      }
     }
     section {
       flex: 1;

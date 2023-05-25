@@ -68,7 +68,7 @@
 	<!-- 북마크 장소 조회 -->
 	<select id="getMyplace" parameterType="Myplace" resultMap="AttractionMap">
 		select *
-		from attraction left join (select * from myplace where user_id=#{userId}) m on content_id = attraction_id
+		from attraction right join (select * from myplace where user_id=#{userId}) m on content_id = attraction_id
 		where content_id=#{attractionId}
 	</select>
 

@@ -258,6 +258,7 @@ export default {
   display: flex;
   justify-content: center;
   background-color: #f5f6f7;
+  font-family: serif;
   .container {
     width: 40%;
     // background-color: $background;

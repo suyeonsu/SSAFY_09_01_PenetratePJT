@@ -50,19 +50,28 @@
           </tr>
           <template v-if="isEditPassword">
             <tr class="change-password">
-              <th>현재 비밀번호</th>
+              <th>
+                현재 <br />
+                비밀번호
+              </th>
               <td class="edit">
                 <input type="text" v-model="currentPassword" />
               </td>
             </tr>
             <tr class="change-password">
-              <th>새 비밀번호</th>
+              <th>
+                새 <br />
+                비밀번호
+              </th>
               <td class="edit">
                 <input type="text" v-model="nextPassword1" />
               </td>
             </tr>
             <tr class="change-password">
-              <th>새 비밀번호 확인</th>
+              <th>
+                비밀번호 <br />
+                확인
+              </th>
               <td class="edit">
                 <input type="text" v-model="nextPassword2" />
               </td>
@@ -201,10 +210,10 @@ export default {
               width: 10%;
             }
             &:nth-child(2) {
-              width: 60%;
+              width: 55%;
             }
             &:nth-child(3) {
-              width: 10%;
+              width: 15%;
             }
             &:nth-child(4) {
               width: 20%;
@@ -260,9 +269,10 @@ export default {
       font-weight: bold;
       border-left: 3px dashed $background;
       .icon {
-        width: max-content;
+        width: 2rem;
         color: $background;
-        padding: 3rem 0;
+
+        padding: 1rem 0;
       }
       table {
         width: 100%;

@@ -271,6 +271,7 @@ export const useTourStore = defineStore(
         url,
         params,
       };
+      console.log("장소디테일 옵션:", options);
       const res = await axios(options);
       detailPlace.value = res.data;
       console.log("장소디테일:", res.data);
@@ -317,13 +318,16 @@ export const useTourStore = defineStore(
           userId: userStore.userInfo.id,
         };
         const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
           method: "post",
           url,
           params,
         };
         const res = await axios(options);
 
-        console.log("별점주기 성공", res);
+        alert("별점주기 성공");
       } catch (error) {
         console.log("별점주기 에러");
         throw error;
@@ -351,6 +355,8 @@ export const useTourStore = defineStore(
           url,
           params,
         };
+
+        console.log("북마크 목록 옵션: ", options);
         const res = await axios(options);
         if (res.data.list != null) {
           places.value.push(...res.data.list);
@@ -374,10 +380,11 @@ export const useTourStore = defineStore(
           headers: {
             Authorization: ACCESS_TOKEN,
           },
-          method: "put",
+          method: "post",
           url,
           params,
         };
+        console.log("북마크 등록 옵션: ", options);
         const res = await axios(options);
         console.log("북마크 등록 성공", res);
       } catch (error) {
@@ -401,6 +408,8 @@ export const useTourStore = defineStore(
           url,
           params,
         };
+
+        console.log("북마크 취소 옵션: ", options);
         const res = await axios(options);
         console.log("북마크 취소 성공", res);
       } catch (error) {
