@@ -27,24 +27,6 @@
               </router-link>
             </template>
           </div>
-          <div>
-            <!-- 서브페이지(핫플레이스, 여행계획) -->
-            <template v-for="page in this.pages" :key="page.id">
-              <router-link @click="changeTheme(page)" :to="{ name: page.name }">
-                <li
-                  :class="{
-                    item: true,
-                    active: page.id === tourStore.activeTheme.id ? true : false,
-                  }"
-                  :id="page.id">
-                  <img
-                    :src="require(`@/assets/image/tour/${page.image}.png`)"
-                    alt="" />
-                  {{ page.text }}
-                </li>
-              </router-link>
-            </template>
-          </div>
         </ul>
 
         <div :class="{ list: true, 'hide-list': tourStore.hideList }">
@@ -103,20 +85,11 @@ export default {
           image: "shopping",
           text: "쇼핑",
         },
-      ],
-      pages: [
         {
           id: 1,
           image: "myplace",
           text: "북마크",
-          name: "myPlaceList",
         },
-        // {
-        //   id: 2,
-        //   image: "destination",
-        //   text: "여행계획",
-        //   name: "planList",
-        // },
       ],
     };
   },
@@ -127,7 +100,7 @@ export default {
     };
   },
   created() {
-    // this.tourStore.$reset();
+    this.tourStore.$reset();
   },
   mounted() {
     if (window.kakao && window.kakao.maps) {
@@ -166,7 +139,11 @@ export default {
       });
     },
 
-    // 테마 선택 이벤트 핸들러 (지도 화면에 마커 뿌리기)
+    /** 테마 선택 이벤트 핸들러
+     * 1. 테마 버튼을 선택 시 초기 페이지를 요청한다.
+     * 2. 결과를 pinia의 markers 배열에 추가한다.
+     * 3. 1회당 결과를 받아와서 마커를 만들고 지도에 추가한다.
+     */
     async changeTheme(theme) {
       const nextPlaces = await this.tourStore.changeTheme(theme);
       console.log("다음장소:", nextPlaces);
@@ -199,7 +176,7 @@ export default {
       right: 1px;
       top: 200px;
       border: 1px solid lightgray;
-      background: white;
+      background: $background;
       border-radius: 0.5rem;
       font-size: 1.2rem;
       z-index: 99999;
@@ -227,7 +204,8 @@ export default {
       top: 0;
       left: 0;
       height: 100%;
-      background: white;
+      font-family: "S-CoreDream-3Light";
+      background: $background;
       display: flex;
       justify-content: space-between;
       flex-direction: column;
@@ -250,7 +228,7 @@ export default {
         cursor: pointer;
         &.active {
           background-color: $primary;
-          color: white;
+          color: $background;
         }
         &:hover {
           background-color: $primary;
@@ -277,7 +255,7 @@ export default {
         // 사이드바 토글용 버튼
         width: 20px;
         height: 40px;
-        background-color: white;
+        background-color: $background;
         position: absolute;
         top: 50%;
         left: $side-bar-width;

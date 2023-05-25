@@ -17,11 +17,14 @@
               </tr>
             </thead>
             <tbody>
-              <tr v-for="n in 10" :key="n">
-                <td>{{ n }}</td>
-                <td>글제목1</td>
-                <td>23</td>
-                <td>2023. 5. 20.</td>
+              <tr
+                @click="goToDetail(item.articleno)"
+                v-for="item of recentArticle"
+                :key="item.regtime">
+                <td>{{ item.articleno }}</td>
+                <td>{{ item.subject }}</td>
+                <td>{{ item.hit }}</td>
+                <td>{{ boardStore.getTimeFormat(item.regtime) }}</td>
               </tr>
             </tbody>
           </table>
@@ -36,22 +39,45 @@
           </tr>
           <tr>
             <th>이름</th>
-            <td>{{ userStore.userInfo.name }}</td>
+            <td class="edit" v-if="isEditName">
+              <input type="text" v-model="nextName" />
+            </td>
+            <td v-else>{{ userStore.userInfo.name }}</td>
           </tr>
           <tr>
             <th>이메일</th>
             <td>{{ userStore.userInfo.email }}</td>
           </tr>
+          <template v-if="isEditPassword">
+            <tr class="change-password">
+              <th>현재 비밀번호</th>
+              <td class="edit">
+                <input type="text" v-model="currentPassword" />
+              </td>
+            </tr>
+            <tr class="change-password">
+              <th>새 비밀번호</th>
+              <td class="edit">
+                <input type="text" v-model="nextPassword1" />
+              </td>
+            </tr>
+            <tr class="change-password">
+              <th>새 비밀번호 확인</th>
+              <td class="edit">
+                <input type="text" v-model="nextPassword2" />
+              </td>
+            </tr>
+          </template>
         </table>
         <div class="menu">
-          <router-link
-            :to="{
-              name: 'join',
-            }"
-            class="item"
-            >수정하기</router-link
-          >
-          <div class="item">탈퇴하기</div>
+          <div @click="edit" v-if="isEditName || isEditPassword" class="item">
+            수정 완료하기
+          </div>
+          <template v-else>
+            <div @click="goToEditName" class="item">이름 수정하기</div>
+            <div @click="goToEditPassword" class="item">비밀번호 수정하기</div>
+            <div class="item">탈퇴하기</div>
+          </template>
         </div>
       </section>
     </div>
@@ -60,15 +86,74 @@
 <script>
 import ProjectIconCompVue from "@/components/ProjectIconComp.vue";
 import { useUserStore } from "@/store/userStore";
+import { useBoardStore } from "@/store/boardStore";
 export default {
   components: {
     ProjectIconCompVue,
   },
   setup() {
     const userStore = useUserStore();
+    const boardStore = useBoardStore();
     return {
       userStore,
+      boardStore,
     };
+  },
+  data() {
+    return {
+      recentArticle: [],
+      isEditName: false,
+      isEditPassword: false,
+      nextName: "",
+      currentPassword: "",
+      nextPassword1: "",
+      nextPassword2: "",
+    };
+  },
+  async created() {
+    this.recentArticle = await this.boardStore.myRecentList(
+      this.$route.params.id
+    );
+  },
+  methods: {
+    goToDetail(articleno) {
+      this.$router.push({ name: "freeBoardDetail", params: { id: articleno } });
+    },
+    goToEditName() {
+      this.isEditName = true;
+      this.isEditPassword = false;
+    },
+    goToEditPassword() {
+      this.isEditName = false;
+      this.isEditPassword = true;
+    },
+    async edit() {
+      try {
+        if (this.isEditName) {
+          if (this.nextName == "") {
+            alert("값을 입력해주세요");
+          } else {
+            await this.userStore.editUserName(this.nextName);
+            alert("이름 업데이트 성공!");
+            this.isEditName = false;
+          }
+        } else if (this.isEditPassword) {
+          if (this.currentPassword == "") {
+            alert("값을 입력해주세요");
+          } else if (this.nextPassword1 != this.nextPassword2) {
+            alert("입력하신 비밀번호를 다시 확인해주세요.");
+          } else {
+            await this.userStore.editUserPassword(this.nextPassword1);
+            this.isEditPassword = false;
+            this.userStore.$reset();
+          }
+        } else {
+          return;
+        }
+      } catch (error) {
+        console.log("로그인 에러");
+      }
+    },
   },
 };
 </script>
@@ -86,7 +171,7 @@ export default {
     margin: 0 auto;
     box-sizing: border-box;
     display: flex;
-    background: white;
+    background: $background;
     border-radius: 1rem;
     overflow: hidden;
     box-shadow: 0 1rem 5rem rgba(0, 0, 0, 0.3);
@@ -99,7 +184,7 @@ export default {
         padding: 0.5rem 1rem 0.5rem 5%;
         background: $primary;
         font-size: 2rem;
-        color: white;
+        color: $background;
         font-weight: bold;
       }
       .table-container {
@@ -139,7 +224,7 @@ export default {
               cursor: pointer;
               &:hover {
                 background: $primary;
-                color: white;
+                color: $background;
               }
             }
             td:not(:nth-child(2)) {
@@ -159,12 +244,24 @@ export default {
       align-items: center;
       box-sizing: border-box;
       position: relative;
-      color: white;
+      color: $background;
+      .edit {
+        input {
+          width: 100%;
+          background: $primary;
+          border: none;
+          color: $background;
+          font-size: 1.1rem;
+          font-weight: bold;
+          border-bottom: 2px solid $background;
+          outline: none;
+        }
+      }
       font-weight: bold;
-      border-left: 3px dashed white;
+      border-left: 3px dashed $background;
       .icon {
         width: max-content;
-        color: white;
+        color: $background;
         padding: 3rem 0;
       }
       table {
@@ -174,6 +271,11 @@ export default {
           display: flex;
           align-items: center;
           box-sizing: border-box;
+          &.change-password {
+            th {
+              font-size: 1rem;
+            }
+          }
           th,
           td {
             display: flex;
@@ -208,7 +310,7 @@ export default {
           cursor: pointer;
           transition: 0.2s;
           background: $secondary;
-          color: white;
+          color: $background;
           &:hover {
             transform: scale(1.1);
           }

@@ -3,6 +3,7 @@ import { createApp, h, inject, ref } from "vue";
 import axios from "axios";
 import router from "@/router";
 import OverlayComp from "@/components/OverlayComp.vue";
+import { useUserStore } from "./userStore";
 
 /* global kakao */
 export const useTourStore = defineStore(
@@ -19,11 +20,18 @@ export const useTourStore = defineStore(
     const hideList = ref(true); // 장소 리스트 숨기기
     const hideDetail = ref(true); // 상세 페이지 숨기기
     const detailPlace = ref({}); // 상세 페이지 요소
-    const searchLat = ref(0); // 검색 기준 위도
-    const searchLon = ref(0); // 검색 기준 경도
     const centerLat = ref(0); // 표시 기준 위도
     const centerLon = ref(0); // 표시 기준 경도
     const searchPageNo = ref(1); // 검색 페이지
+
+    const DOMAIN_URL = "http://localhost:9000/group5";
+    const sido = ref([]); // 시도 배열
+    const gugun = ref([]); // 구군 배열
+    const selectedSido = ref(0); // 선택된 시도
+    const selectedGugun = ref(0); // 선택된 구군
+    const selectedSort = ref("readcount"); // 정렬 기준
+    const keywords = ref(""); // 검색어
+    const userStore = useUserStore();
 
     function $reset() {
       map.value = null; // 지도 객체
@@ -34,12 +42,14 @@ export const useTourStore = defineStore(
       activePlace.value = ""; // 활성화 된 장소
       hideList.value = true; // 장소 리스트 숨기기
       hideDetail.value = true; // 상세 페이지 숨기기
-      detailPlace.value = {}; // 상세 페이지 요소
+      // detailPlace.value = {}; // 상세 페이지 요소
       searchPageNo.value = 1;
-      searchLat.value = 0;
-      searchLon.value = 0;
       centerLat.value = 37.498004414546934;
       centerLon.value = 127.02770621963765;
+      selectedSido.value = 0;
+      selectedGugun.value = 0;
+      selectedSort.value = "readcount";
+      keywords.value = "";
     }
 
     const router = inject("router"); // router 사용.
@@ -66,7 +76,7 @@ export const useTourStore = defineStore(
 
       // 지도 컨트롤러 - 줌
       map.value.setMinLevel(2); // 최대 확대 한계
-      map.value.setMaxLevel(11); // 최소 축소 한계
+      map.value.setMaxLevel(14); // 최소 축소 한계
       const zoomControl = new kakao.maps.ZoomControl();
       map.value.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
     }
@@ -79,28 +89,28 @@ export const useTourStore = defineStore(
      * @param {object} nextTheme
      */
     async function changeTheme(nextTheme) {
-      if (activeTheme.value.id !== nextTheme.id) {
-        activeTheme.value = nextTheme;
-        console.log("액티브 테마: ", activeTheme);
-
-        reset();
-
-        return await infinityScroll();
-      }
-      return null;
+      activeTheme.value = nextTheme;
+      console.log("액티브 테마: ", activeTheme.value);
+      resetMarker();
+      return await infinityScroll();
     }
+    /** 인피니티 스크롤
+     * 한번 호출될 때 마다 다음 페이지의 내용을 가져온다.
+     */
     async function infinityScroll() {
       if (activeTheme.value.id > 10) {
         // 일반 테마일 경우
-        return await getPlaceInfo(map.value.getCenter(), map.value.getBounds());
+        return await getPlaceInfo(map.value.getCenter());
       } else {
         // 다른 서브페이지로 이동하는 경우(추천명소)
-        return await getMyPlaceList();
+        return await getBookmarkList();
       }
     }
-    /** 투어 페이지 리셋하기 */
-    function reset() {
-      // 기존에 존재하던 마커 제거
+    /** 투어 페이지 리셋하기
+     * 1. 기존의 마커 및 오버레이 제거
+     * 2. 현재 active 된 장소 해제.
+     */
+    function resetMarker() {
       for (const now of markers.value) {
         now.setMap(null);
       }
@@ -117,6 +127,290 @@ export const useTourStore = defineStore(
     // ====================================================
 
     // ====================================================
+    // 시작 - 현재 위치 기반 장소 정보 받아오기
+    /** 현재 위치 기반 장소 정보 요청하기
+     * @param {kakao.map.center} center 카카오 맵 중심 객체
+     * @returns {Promise<Object[]>} 장소 객체 배열
+     */
+    async function getPlaceInfo(center) {
+      try {
+        const url = `${DOMAIN_URL}/trip`;
+        const params = {
+          curlatitude: center.Ma, // 중심 lat
+          curlongitude: center.La, // 중심 lon
+          gugun: selectedGugun.value,
+          sido: selectedSido.value,
+          keywords: keywords.value.replaceAll(" ", ","),
+          pageNum: searchPageNo.value++,
+          pageSize: 10,
+          sort: selectedSort.value,
+          type: activeTheme.value.id,
+        };
+
+        const options = {
+          method: "get",
+          url,
+          params,
+        };
+        console.log("파라미터:", params);
+        const res = await axios(options);
+        // console.log("결과?", res);
+        // console.log(...res.data.list);
+        if (res.data.list != null) {
+          places.value.push(...res.data.list);
+          return res.data.list;
+        }
+        return null;
+      } catch (error) {
+        console.log("장소 불러오기 에러:", error);
+        throw error;
+      }
+    }
+    // 끝 - 현재 위치 기반 장소 정보 받아오기
+    // ====================================================
+
+    // ====================================================
+    // 시작 - 마커 생성하기
+    /** 마커 생성 메소드
+     * 1. 커스텀 마커 이미지를 가져와 커스텀 마커 객체를 만든뒤 화면에 표시한다.
+     * 2. 커스텀 오버레이를 생성해(view파일) 마커 객체와 겹치도록 화면에 표시한다.
+     * 3. 마커 클릭 이벤트를 등록한다.
+     * @param {Array} nextPlaces
+     */
+    function makeMarkers(nextPlaces) {
+      console.log(nextPlaces);
+      // 커스텀 마커 이미지 생성
+      const imageSize = new kakao.maps.Size(22, 36);
+      const imageSrc = require(`@/assets/image/tour/pointer.svg`);
+      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
+
+      // 마커 객체 생성
+      for (let now of nextPlaces) {
+        console.log("현재장소: ", now);
+        const position = new kakao.maps.LatLng(now.latitude, now.longitude);
+
+        // 마커 생성
+        const marker = new kakao.maps.Marker({
+          position,
+          image: markerImage,
+          clickable: true,
+        }); // 커스텀 마커
+        // clickable: 마커 클릭이벤트용 옵션
+        markers.value.push(marker);
+        marker.setMap(map.value);
+
+        // 커스텀 오버레이
+        const overlayContent = document.createElement("div");
+        const customOverlay = new kakao.maps.CustomOverlay({
+          position: position,
+          content: overlayContent,
+          xAnchor: 0,
+          yAnchor: 1.3,
+        });
+        // 커스텀 오버레이 SFC
+        const app = createApp({
+          render: () =>
+            h(OverlayComp, {
+              // props
+              title: now.title,
+              imageName: activeTheme.value.image,
+              contentId: now.contentId,
+            }),
+        });
+        app.mount(overlayContent);
+        overlays.value.push(customOverlay);
+        customOverlay.setMap(map.value);
+
+        // 마커 클릭이벤트 등록
+        overlayContent.addEventListener("click", () => {
+          // console.log("클릭");
+          focusHandler(marker, customOverlay);
+
+          // movePosition(now.mapy, now.mapx);
+          goToDetail(now.contentId);
+        });
+        overlayContent.addEventListener("mouseover", () => {
+          // console.log("마우스오버");
+          focusHandler(marker, customOverlay);
+        });
+        overlayContent.addEventListener("mouseout", () => {
+          // console.log("마우스아웃");
+          blurHandler(marker, customOverlay, now.contentId);
+        });
+      }
+    }
+    /** 마커, 오버레이 포커스 이벤트 핸들러 */
+    function focusHandler(marker, customOverlay) {
+      marker.setZIndex(999);
+      customOverlay.setZIndex(1000);
+    }
+    /** 마커, 오버레이 포커스 해제 이벤트 핸들러 */
+    function blurHandler(marker, customOverlay, targetId) {
+      if (targetId !== activePlace.value) {
+        marker.setZIndex(0);
+        customOverlay.setZIndex(0);
+      }
+    }
+    // 끝 - 마커 생성하기
+    // ====================================================
+
+    // ====================================================
+    // 시작 - 디테일 정보 가져오기
+    /** id에 따라 상세 정보 가져오기 함수
+     * pinia의 detailPlace에 가져온 장소 정보를 저장한다.
+     * @param {String} id attraction 아이디
+     */
+    async function getDetail(id) {
+      const url = `${DOMAIN_URL}/trip/detail`;
+      const params = {
+        attractionId: id,
+        userId: userStore.userInfo.id,
+      };
+      const options = {
+        method: "get",
+        url,
+        params,
+      };
+      const res = await axios(options);
+      detailPlace.value = res.data;
+      console.log("장소디테일:", res.data);
+      movePosition(
+        detailPlace.value.attraction.latitude,
+        detailPlace.value.attraction.longitude
+      );
+    }
+    /** 상세 정보 페이지로 이동하기
+     * 1. pinia의 activePlace를 현재 장소의 id로 바꾼다. (activatePlace)
+     * 2. pinia의 detailPlace에 id값을 이용해 정보를 저장한다. (getDetail(id))
+     * 3. activePlace의 id를 기준으로 추천검색, 추천명소, 여행경로 페이지로 라우팅한다.
+     */
+    async function goToDetail(id) {
+      activatePlace(id);
+      await getDetail(id);
+      if (activePlace.value > 10) {
+        // 일반 검색
+        router.push({ name: "searchDetail", params: { id } });
+      } else if (activePlace.value == 1) {
+        // 추천명소
+        router.push({ name: "myPlaceDetail", params: { id } });
+      } else if (activePlace.value == 2) {
+        // 여행 경로
+        router.push({ name: "planDetail", params: { id } });
+      }
+    }
+    // 끝 - 디테일 정보 가져오기
+    // ====================================================
+    // ====================================================
+    // 시작 - 디테일 페이지 함수
+
+    /** 별점 주기
+     *
+     * @param {*} attractionId
+     * @param {*} star
+     */
+    async function rating(attractionId, star) {
+      try {
+        const url = `${DOMAIN_URL}/rate`;
+        const params = {
+          attractionId,
+          star,
+          userId: userStore.userInfo.id,
+        };
+        const options = {
+          method: "post",
+          url,
+          params,
+        };
+        const res = await axios(options);
+
+        console.log("별점주기 성공", res);
+      } catch (error) {
+        console.log("별점주기 에러");
+        throw error;
+      }
+    }
+
+    // 끝 - 디테일 페이지 함수
+    // ====================================================
+    // ====================================================
+    // 시작 - 북마크
+    const ACCESS_TOKEN = `Bearer ${userStore.accessToken}`;
+    async function getBookmarkList() {
+      try {
+        const url = `${DOMAIN_URL}/myplace`;
+        const params = {
+          pageNum: searchPageNo.value++,
+          pageSize: 10,
+          userid: userStore.userInfo.id,
+        };
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "get",
+          url,
+          params,
+        };
+        const res = await axios(options);
+        if (res.data.list != null) {
+          places.value.push(...res.data.list);
+          return res.data.list;
+        }
+        console.log("북마크 목록 성공", res);
+        return null;
+      } catch (error) {
+        console.log("북마크 목록 에러");
+        throw error;
+      }
+    }
+    async function putBookmark(attractionId) {
+      try {
+        const url = `${DOMAIN_URL}/myplace`;
+        const params = {
+          attractionId,
+          userId: userStore.userInfo.id,
+        };
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "put",
+          url,
+          params,
+        };
+        const res = await axios(options);
+        console.log("북마크 등록 성공", res);
+      } catch (error) {
+        console.log("북마크 등록 에러");
+        throw error;
+      }
+    }
+
+    async function deleteBookmark(attractionId) {
+      try {
+        const url = `${DOMAIN_URL}/myplace`;
+        const params = {
+          attractionId,
+          userId: userStore.userInfo.id,
+        };
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "delete",
+          url,
+          params,
+        };
+        const res = await axios(options);
+        console.log("북마크 취소 성공", res);
+      } catch (error) {
+        console.log("북마크 취소 에러");
+        throw error;
+      }
+    }
+    // 끝 - 북마크
+    // ====================================================
+    // ====================================================
     // 시작 - 사이드 바 토글
     /** 사이드 바 리스트 항목 숨기기 토글 */
     function toggleHideList() {
@@ -130,10 +424,7 @@ export const useTourStore = defineStore(
         hideDetail.value = true;
       }
     }
-    // ====================================================
-    // ====================================================
-    // 시작 - 장소 자세히보기
-    /** 상세 정보 페이지 정보 확인 */
+    /** 상세 정보 페이지 열기 */
     function activatePlace(id) {
       activePlace.value = id;
       hideDetail.value = false;
@@ -143,7 +434,7 @@ export const useTourStore = defineStore(
       activePlace.value = "";
       hideDetail.value = true;
     }
-    // 끝 - 장소 자세히보기
+    // 끝 - 사이드 바 토글
     // ====================================================
 
     // ====================================================
@@ -196,98 +487,6 @@ export const useTourStore = defineStore(
         }
       );
     }
-    /** 위, 경도를 이용해 두 지점 사이 거리를 구하는 함수
-     * @param {Number} lat1 지점1 위도
-     * @param {Number} lon1 지점1 경도
-     * @param {Number} lat2 지점2 위도
-     * @param {Number} lon2 지점2 경도
-     * @returns {Number} 두 지점 사이의 거리
-     */
-    function getDistanceFromLatLonInM(lat1, lon1, lat2, lon2) {
-      function deg2rad(deg) {
-        return deg * (Math.PI / 180);
-      }
-
-      const R = 6371; // Radius of the earth in km
-      const dLat = deg2rad(lat2 - lat1); // deg2rad below
-      const dLon = deg2rad(lon2 - lon1);
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(deg2rad(lat1)) *
-          Math.cos(deg2rad(lat2)) *
-          Math.sin(dLon / 2) *
-          Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      const d = R * c * 1000; // Distance in M
-      return d;
-    }
-    // 끝 - 일반 지도 함수
-    // ====================================================
-
-    // ====================================================
-    // 시작 - 현재 위치 기반 장소 정보 받아오기
-
-    /** 현재 위치 기반 장소 정보 요청하기 by Open API
-     * @param {kakao.maps.Point} center 화면 중심 좌표
-     * @param {kakao.maps.Point} bounds 화면 영역 정보
-     * @returns {Promise<Object[]>} 장소 객체 배열
-     */
-    async function getPlaceInfo(center, bounds) {
-      const neLatLng = bounds.getNorthEast(); // 북동 꼭지점 좌표
-
-      // Ma: Lat, La: Lon
-      const mapAreaInfo = {
-        centerLat: center.Ma, // 중심 latitude
-        centerLon: center.La, // 중심 longitude
-        neLat: neLatLng.Ma,
-        neLon: neLatLng.La,
-      };
-
-      // 중심부터 꼭지점 사이의 거리 (단위: m)
-      const distance = getDistanceFromLatLonInM(
-        mapAreaInfo.centerLat,
-        mapAreaInfo.centerLon,
-        mapAreaInfo.neLat,
-        mapAreaInfo.neLon
-      );
-
-      const parameters = {
-        MobileOS: "WIN",
-        MobileApp: "EnjoyTrip",
-        mapX: mapAreaInfo.centerLon, // 중심 경도
-        mapY: mapAreaInfo.centerLat, // 중심 위도
-        radius: distance, // 반경
-        contentTypeId: activeTheme.value.id,
-        _type: "json",
-        pageNo: searchPageNo.value++,
-        numOfRows: 10,
-        serviceKey: process.env.VUE_APP_SERVICE_KEY,
-      };
-
-      const options = {
-        methods: "get",
-        url: "https://apis.data.go.kr/B551011/KorService1/locationBasedList1",
-        params: parameters,
-      };
-
-      const res = await axios(options).catch((e) => {
-        console.log("axios 에러:", e);
-      });
-      console.log("응답", res);
-      if (res.data.response.body.items.item != null) {
-        places.value.push(...res.data.response.body.items.item);
-
-        return res.data.response.body.items.item;
-      }
-      return null;
-    }
-    // 끝 - 현재 위치 기반 장소 정보 받아오기
-    // ====================================================
-    // ====================================================
-    // 시작 - 키워드 검색
-    const sido = ref([]);
-    const gugun = ref([]);
-
     /** 시도 코드를 가져오는 함수
      * @returns {Array} 장소 객체 배열
      */
@@ -302,7 +501,7 @@ export const useTourStore = defineStore(
         serviceKey: process.env.VUE_APP_SERVICE_KEY,
       };
       const options = {
-        methods: "get",
+        method: "get",
         url: "https://apis.data.go.kr/B551011/KorService1/areaCode1",
         params: parameters,
       };
@@ -326,7 +525,7 @@ export const useTourStore = defineStore(
         serviceKey: process.env.VUE_APP_SERVICE_KEY,
       };
       const options = {
-        methods: "get",
+        method: "get",
         url: "https://apis.data.go.kr/B551011/KorService1/areaCode1",
         params: parameters,
       };
@@ -335,194 +534,9 @@ export const useTourStore = defineStore(
       // console.log(res);
       gugun.value.push(...res.data.response.body.items.item);
     }
-    /** 키워드 검색 기능.
-     * @param {String} keyword 키워드
-     * @param {Number} areaCode 시도코드
-     * @param {Number} sigunguCode 구군코드
-     */
-    async function getKeywordResult(keyword, areaCode, sigunguCode) {
-      console.log("키워드", keyword);
-      const parameters = {
-        MobileOS: "WIN",
-        MobileApp: "EnjoyTrip",
-        keyword,
-        areaCode,
-        sigunguCode,
-        contentTypeId: activeTheme.value.id,
-        _type: "json",
-        pageNo: searchPageNo.value++,
-        numOfRows: 10,
-        serviceKey: process.env.VUE_APP_SERVICE_KEY,
-      };
-      const options = {
-        methods: "get",
-        url: "https://apis.data.go.kr/B551011/KorService1/searchKeyword1",
-        params: parameters,
-      };
-      const res = await axios(options);
-      console.log(res);
-      reset();
-      if (res.data.response.body.items.item != null) {
-        places.value.push(...res.data.response.body.items.item);
-
-        return res.data.response.body.items.item;
-      }
-      return null;
-    }
-    // 끝 - 키워드 검색
+    // 끝 - 일반 지도 함수
     // ====================================================
 
-    // ====================================================
-    // 시작 - 내장소 영역
-    /** 내장소 리스트 가져오기 함수
-     * @returns {Promise<Object[]>} 장소 객체 배열.
-     */
-    function getMyPlaceList() {
-      // axios로 내가 저장한 장소 리스트 받아올 예정
-      const items = [{}];
-      return items;
-    }
-    // 끝 - 내장소 영역
-    // ====================================================
-
-    // ====================================================
-    // 시작 - 마커 생성하기
-
-    /** 마커 생성 메소드
-     * 1. 커스텀 마커 이미지를 가져와 커스텀 마커 객체를 만든뒤 화면에 표시한다.
-     * 2. 커스텀 오버레이를 생성해(view파일) 마커 객체와 겹치도록 화면에 표시한다.
-     * 3. 마커 클릭 이벤트를 등록한다.
-     * @param {Array} nextPlaces
-     */
-    function makeMarkers(nextPlaces) {
-      console.log(nextPlaces);
-      // 커스텀 마커 이미지 생성
-      const imageSize = new kakao.maps.Size(22, 36);
-      const imageSrc = require(`@/assets/image/tour/pointer.svg`);
-      const markerImage = new kakao.maps.MarkerImage(imageSrc, imageSize);
-
-      // 마커 객체 생성
-      for (let now of nextPlaces) {
-        console.log(now);
-        const position = new kakao.maps.LatLng(now.mapy, now.mapx);
-
-        // 마커 생성
-        const marker = new kakao.maps.Marker({
-          position,
-          image: markerImage,
-          clickable: true,
-        }); // 커스텀 마커
-        // clickable: 마커 클릭이벤트용 옵션
-        markers.value.push(marker);
-        marker.setMap(map.value);
-
-        // 커스텀 오버레이
-        const overlayContent = document.createElement("div");
-        const customOverlay = new kakao.maps.CustomOverlay({
-          position: position,
-          content: overlayContent,
-          xAnchor: 0,
-          yAnchor: 1.3,
-        });
-        // 커스텀 오버레이 SFC
-        const app = createApp({
-          render: () =>
-            h(OverlayComp, {
-              // props
-              title: now.title,
-              imageName: activeTheme.value.image,
-              contentid: now.contentid,
-            }),
-        });
-        app.mount(overlayContent);
-        overlays.value.push(customOverlay);
-        customOverlay.setMap(map.value);
-
-        // 마커 클릭이벤트 등록
-        overlayContent.addEventListener("click", () => {
-          // console.log("클릭");
-          focusHandler(marker, customOverlay);
-
-          // movePosition(now.mapy, now.mapx);
-          goToDetail(now.contentid);
-        });
-        overlayContent.addEventListener("mouseover", () => {
-          // console.log("마우스오버");
-          focusHandler(marker, customOverlay);
-        });
-        overlayContent.addEventListener("mouseout", () => {
-          // console.log("마우스아웃");
-          blurHandler(marker, customOverlay, now.contentid);
-        });
-      }
-    }
-    /** 마커, 오버레이 포커스 이벤트 핸들러 */
-    function focusHandler(marker, customOverlay) {
-      marker.setZIndex(999);
-      customOverlay.setZIndex(1000);
-    }
-    /** 마커, 오버레이 포커스 해제 이벤트 핸들러 */
-    function blurHandler(marker, customOverlay, targetId) {
-      if (targetId !== activePlace.value) {
-        marker.setZIndex(0);
-        customOverlay.setZIndex(0);
-      }
-    }
-    // 끝 - 마커 생성하기
-    // ====================================================
-
-    // ====================================================
-    // 시작 - 디테일 정보 가져오기
-    /** id에 따라 상세 정보 가져오기 함수
-     * pinia의 detailPlace에 가져온 장소 정보를 저장한다.
-     * @param {String} id attraction 아이디
-     */
-    async function getDetail(id) {
-      const parameters = {
-        MobileOS: "WIN",
-        MobileApp: "EnjoyTrip",
-        contentId: id,
-        _type: "json",
-        serviceKey: process.env.VUE_APP_SERVICE_KEY,
-        defaultYN: "Y",
-        firstImageYN: "Y",
-        areacodeYN: "Y",
-        addrinfoYN: "Y",
-        mapinfoYN: "Y",
-        overviewYN: "Y",
-      };
-      const options = {
-        methods: "get",
-        url: "https://apis.data.go.kr/B551011/KorService1/detailCommon1",
-        params: parameters,
-      };
-      const res = await axios(options);
-      // console.log("결과물:", res.data.response.body.items.item[0]);
-      detailPlace.value = res.data.response.body.items.item[0];
-      movePosition(detailPlace.value.mapy, detailPlace.value.mapx);
-      console.log("디테일", detailPlace.value);
-    }
-    /** 상세 정보 페이지로 이동하기
-     * 1. pinia의 activePlace를 현재 장소의 id로 바꾼다. (activatePlace)
-     * 2. pinia의 detailPlace에 id값을 이용해 정보를 저장한다. (getDetail(id))
-     * 3. activePlace의 id를 기준으로 추천검색, 추천명소, 여행경로 페이지로 라우팅한다.
-     */
-    async function goToDetail(id) {
-      activatePlace(id);
-      await getDetail(id);
-      if (activePlace.value > 10) {
-        // 일반 검색
-        router.push({ name: "searchDetail", params: { id } });
-      } else if (activePlace.value == 1) {
-        // 추천명소
-        router.push({ name: "myPlaceDetail", params: { id } });
-      } else if (activePlace.value == 2) {
-        // 여행 경로
-        router.push({ name: "planDetail", params: { id } });
-      }
-    }
-    // 끝 - 디테일 정보 가져오기
-    // ====================================================
     return {
       $reset,
       initMap,
@@ -548,8 +562,16 @@ export const useTourStore = defineStore(
       getGugun,
       sido,
       gugun,
-      getKeywordResult,
       infinityScroll,
+      selectedSido,
+      selectedGugun,
+      selectedSort,
+      keywords,
+      rating,
+      getBookmarkList,
+      putBookmark,
+      deleteBookmark,
+      resetMarker,
     };
   },
   {

@@ -66,7 +66,7 @@ export default {
     &:hover,
     &.active {
       background: $primary;
-      color: white;
+      color: $background;
       cursor: pointer;
     }
   }

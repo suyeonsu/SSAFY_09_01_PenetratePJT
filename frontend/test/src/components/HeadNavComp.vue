@@ -59,9 +59,11 @@ export default {
 <style scoped lang="scss">
 .nav {
   display: flex;
+  font-family: "S-CoreDream-3Light";
+  font-weight: 500;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 10%;
+  padding: 1rem 5%;
   height: 10vh;
   box-sizing: border-box;
   nav {

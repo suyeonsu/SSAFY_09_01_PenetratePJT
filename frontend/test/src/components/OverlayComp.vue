@@ -17,7 +17,7 @@ export default {
   props: {
     title: String,
     imageName: String,
-    contentid: String,
+    contentId: Number,
   },
   setup() {
     const tourStore = useTourStore();
@@ -25,7 +25,7 @@ export default {
   },
   computed: {
     active() {
-      return this.tourStore.activePlace === this.contentid;
+      return this.tourStore.activePlace === this.contentId;
     },
   },
 };
@@ -33,10 +33,11 @@ export default {
 
 <style lang="scss" scoped>
 .container {
-  background: white;
+  background: $background;
   transform: translateX(-50%);
   height: 2.4rem;
   display: flex;
+  flex-direction: row;
   align-items: center;
   border-radius: 2rem;
   border: 2px solid $primary;
@@ -48,7 +49,7 @@ export default {
   &:hover,
   &.active {
     background: $primary;
-    color: white;
+    color: $background;
     z-index: 9999999999 !important;
     position: relative;
   }
@@ -61,7 +62,7 @@ export default {
     display: flex;
     justify-content: center;
     align-items: center;
-    background: white;
+    background: $background;
     flex-shrink: 0;
     img {
       width: 65%;

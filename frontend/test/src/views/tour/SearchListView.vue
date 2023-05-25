@@ -1,15 +1,15 @@
 <template>
   <div class="container">
-    <form class="search" @submit.prevent="keywordSearch">
-      <label class="searchLabel">
-        <input type="text" class="searchInput" v-model="keyword" />
-        <font-awesome-icon class="icon" :icon="['fas', 'magnifying-glass']" />
-      </label>
-    </form>
-    <div class="menu">
-      <div class="select">
-        <select class="select" name="sido" v-model="sido">
-          <option value="">시/도</option>
+    <template v-if="tourStore.activeTheme.id > 10">
+      <form class="search" @submit.prevent="keywordSearch">
+        <label class="searchLabel">
+          <input type="text" class="searchInput" v-model="tourStore.keywords" />
+          <font-awesome-icon class="icon" :icon="['fas', 'magnifying-glass']" />
+        </label>
+      </form>
+      <div class="menu">
+        <select class="select" name="sido" v-model="tourStore.selectedSido">
+          <option value="0">시/도</option>
           <option
             v-for="item of tourStore.sido"
             :value="item.code"
@@ -17,8 +17,8 @@
             {{ item.name }}
           </option>
         </select>
-        <select class="select" name="gugun" v-model="gugun">
-          <option value="">구/군</option>
+        <select class="select" name="gugun" v-model="tourStore.selectedGugun">
+          <option value="0">구/군</option>
           <option
             v-for="item of tourStore.gugun"
             :value="item.code"
@@ -26,40 +26,13 @@
             {{ item.name }}
           </option>
         </select>
+        <select class="select" name="sort" v-model="tourStore.selectedSort">
+          <option v-for="item of sorts" :value="item.en" :key="item.en">
+            {{ item.ko }}
+          </option>
+        </select>
       </div>
-      <div class="sort">
-        <label class="sort-item">
-          <input
-            class="sort-input"
-            :class="{ active: sortParam == '거리순' }"
-            type="radio"
-            name="sortParam"
-            value="거리순"
-            v-model="sortParam" />
-          거리순
-        </label>
-        <label class="sort-item">
-          <input
-            class="sort-input"
-            :class="{ active: sortParam == '인기순' }"
-            type="radio"
-            name="sortParam"
-            value="인기순"
-            v-model="sortParam" />
-          인기순
-        </label>
-        <label class="sort-item">
-          <input
-            class="sort-input"
-            :class="{ active: sortParam == '별점순' }"
-            type="radio"
-            name="sortParam"
-            value="별점순"
-            v-model="sortParam" />
-          별점순
-        </label>
-      </div>
-    </div>
+    </template>
     <template v-if="items.length != 0">
       <ul @scroll="scrollHandler" class="list">
         <PlaceCardCompVue
@@ -89,11 +62,25 @@ import missing from "@/assets/image/missing.jpg";
 export default {
   data() {
     return {
-      sido: "",
-      gugun: "",
-      keyword: "",
-      isFirst: false, // 처음 진입한 경우
-      sortParam: "",
+      sorts: [
+        {
+          ko: "조회순",
+          en: "readcount",
+        },
+        {
+          ko: "거리순",
+          en: "distance",
+        },
+        {
+          ko: "별점순",
+          en: "star",
+        },
+        {
+          ko: "제목순",
+          en: "subject",
+        },
+      ],
+      isFirst: false,
     };
   },
   setup() {
@@ -104,11 +91,11 @@ export default {
     this.tourStore.getSido();
   },
   watch: {
-    sido(now) {
+    "tourStore.selectedSido"(now) {
       this.tourStore.getGugun(now);
     },
-    sortParam(now) {
-      console.log(now);
+    "tourStore.selectedSort"() {
+      this.keywordSearch();
     },
   },
   computed: {
@@ -119,33 +106,27 @@ export default {
       return this.isFirst ? "테마를 선택하세요" : "결과가 없습니다";
     },
     items() {
+      console.log("장소들", this.tourStore.places);
       return this.tourStore.places.map((item) => {
         return {
-          id: item.contentid,
+          id: item.contentId,
           title: item.title,
           subTitle: this.tourStore.activeTheme.text,
           address: item.addr1,
-          hearts: 18,
-          stars: 29,
+          stars: item.totalScore,
           imageURL:
-            item.firstimage.length > 0
-              ? item.firstimage
+            item.firstImage.length > 0
+              ? item.firstImage
               : require("@/assets/image/default.jpg"),
-          bookMark: false,
         };
       });
     },
   },
   methods: {
     async keywordSearch() {
-      // console.log(this.keyword, this.sido, this.gugun);
-      const nextPlaces = await this.tourStore.getKeywordResult(
-        this.keyword,
-        this.sido,
-        this.gugun
-      );
+      this.tourStore.resetMarker();
+      const nextPlaces = await this.tourStore.infinityScroll();
       if (nextPlaces != null) {
-        console.log(nextPlaces);
         this.tourStore.makeMarkers(nextPlaces);
       }
     },
@@ -172,7 +153,7 @@ export default {
   // 사이드바 전체
   width: 100%;
   height: 100%;
-  background-color: white; // 임시
+  background-color: $background; // 임시
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -209,16 +190,13 @@ export default {
     align-items: center;
     margin-bottom: 1rem;
     .select {
-      flex: 1;
-      select {
-        width: 40%;
-        height: 2rem;
-        margin-right: 0.5rem;
-        border-radius: 0.3rem;
-        cursor: pointer;
-        padding: 0 0.5rem;
-        background: white;
-      }
+      width: 30%;
+      height: 2rem;
+      margin-right: 0.5rem;
+      border-radius: 0.3rem;
+      cursor: pointer;
+      padding: 0 0.5rem;
+      background: $background;
     }
     .sort {
       display: flex;
@@ -263,7 +241,7 @@ export default {
     left: 100%;
     transition: 0.2s;
     z-index: -1;
-    background: white;
+    background: $background;
     &.hidden {
       left: 0;
     }

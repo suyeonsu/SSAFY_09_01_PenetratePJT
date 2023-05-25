@@ -1,6 +1,6 @@
 import axios from "axios";
 import { defineStore } from "pinia";
-import { ref, watch } from "vue";
+import { ref } from "vue";
 import { useUserStore } from "./userStore";
 
 export const useBoardStore = defineStore(
@@ -35,6 +35,35 @@ export const useBoardStore = defineStore(
       };
     }
 
+    async function myRecentList(userid) {
+      try {
+        const ACCESS_TOKEN = `Bearer ${userStore.accessToken}`;
+
+        const params = {
+          pageNum: 1,
+          keywords: userid,
+          filter: "userid",
+          sort: "regtime",
+          pageSize: 10,
+        };
+
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "get",
+          url: `${DOMAIN_URL}/board`,
+          params,
+        };
+
+        const res = await axios(options);
+        console.log("페이지 로딩 성공:", res);
+        return res.data.list;
+      } catch (error) {
+        alert("페이지 로딩 실패:", error);
+      }
+    }
+
     /** 게시글 리스트 데이터 받아오기 by API
      * pinia의 postList 배열에 데이터를 받아온다.
      */
@@ -51,7 +80,6 @@ export const useBoardStore = defineStore(
           sort: sort.value,
           pageSize: pageSize.value,
         };
-        console.log("검색파라미터:", params);
 
         const options = {
           headers: {
@@ -225,6 +253,7 @@ export const useBoardStore = defineStore(
       resetDetail,
       editArticle,
       postArticle,
+      myRecentList,
     };
   },
   {

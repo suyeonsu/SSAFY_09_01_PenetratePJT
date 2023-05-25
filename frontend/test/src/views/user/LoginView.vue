@@ -100,7 +100,7 @@ export default {
   background-size: cover;
   .container {
     width: 40%;
-    background-color: white;
+    background-color: $background;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -124,7 +124,7 @@ export default {
         font-size: 1.5rem;
         padding: 0.5rem;
         justify-content: center;
-        color: white;
+        color: $background;
         font-weight: bold;
         cursor: pointer;
         &:disabled {

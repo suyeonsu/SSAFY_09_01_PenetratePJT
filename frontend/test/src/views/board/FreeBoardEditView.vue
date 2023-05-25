@@ -179,15 +179,15 @@ export default {
     background: repeating-linear-gradient(
       135deg,
       $primary 0 2%,
-      white 2% 4%,
+      $background 2% 4%,
       $secondary 4% 6%,
-      white 6% 8%
+      $background 6% 8%
     );
     box-shadow: 1rem 1rem burlywood;
     border-radius: 1rem;
     overflow: hidden;
     main {
-      background: white;
+      background: $background;
       width: 100%;
       height: 100%;
       padding: 3rem;
@@ -230,7 +230,7 @@ export default {
           width: 100%;
           height: 100%;
           resize: none;
-          background: white;
+          background: $background;
         }
       }
       .decoration {

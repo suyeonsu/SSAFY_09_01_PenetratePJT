@@ -260,7 +260,7 @@ export default {
   background-color: #f5f6f7;
   .container {
     width: 40%;
-    // background-color: white;
+    // background-color: $background;
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -281,7 +281,7 @@ export default {
         .verify-button {
           display: flex;
           width: 20%;
-          color: white;
+          color: $background;
           font-weight: bold;
           box-sizing: border-box;
           background: $primary;

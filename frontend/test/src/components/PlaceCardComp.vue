@@ -8,14 +8,6 @@
         <h3>
           {{ item.title }}
         </h3>
-        <div @click.stop="bookmarkHandler" class="my-place">
-          <div v-show="item.bookMark">
-            <font-awesome-icon :icon="['fas', 'bookmark']" />
-          </div>
-          <div v-show="!item.bookMark">
-            <font-awesome-icon :icon="['far', 'bookmark']" />
-          </div>
-        </div>
       </div>
       <h4>{{ item.subTitle }}</h4>
       <address>
@@ -34,10 +26,8 @@ export default {
       title: String,
       subTitle: String,
       address: String,
-      hearts: Number,
       stars: Number,
       imageURL: URL,
-      bookMark: Boolean,
     },
   },
   setup() {
@@ -49,9 +39,6 @@ export default {
   methods: {
     async goToDetail() {
       this.tourStore.goToDetail(this.item.id);
-    },
-    bookmarkHandler() {
-      console.log("클릭됨");
     },
   },
 };
@@ -90,7 +77,7 @@ export default {
     // 리스트 아이템
     position: absolute;
     bottom: 0;
-    color: white;
+    color: $background;
     background-color: rgba(0, 0, 0, 0.5);
     width: 100%;
     cursor: pointer;

@@ -164,6 +164,72 @@ export const useUserStore = defineStore(
       }
     }
 
+    /** 유저 이름 변경하기
+     * @param {String} nextName 유저이름
+     */
+    async function editUserName(nextName) {
+      try {
+        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
+        const url = `${DOMAIN_URL}/auth`;
+
+        const data = {
+          id: userInfo.value.id,
+          name: nextName,
+          email: userInfo.value.email,
+          password: "",
+          joindate: "",
+        };
+
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "put",
+          url,
+          data,
+        };
+
+        const res = await axios(options);
+        console.log("유저 정보 업데이트 성공:", res);
+        userInfo.value.name = nextName;
+      } catch (error) {
+        alert("유저 정보 업데이트 실패:", error);
+      }
+    }
+
+    /** 비밀번호 변경 함수
+     *
+     * @param {String} nextPassword 새 비밀번호
+     */
+    async function editUserPassword(nextPassword) {
+      try {
+        const ACCESS_TOKEN = `Bearer ${accessToken.value}`;
+        const url = `${DOMAIN_URL}/auth/updatepw`;
+
+        const data = {
+          id: userInfo.value.id,
+          name: userInfo.value.name,
+          email: userInfo.value.email,
+          password: nextPassword,
+          joindate: "",
+        };
+
+        const options = {
+          headers: {
+            Authorization: ACCESS_TOKEN,
+          },
+          method: "put",
+          url,
+          data,
+        };
+
+        const res = await axios(options);
+        console.log("비밀번호 업데이트 성공:", res);
+      } catch (error) {
+        alert("비밀번호 업데이트 실패:", error);
+      }
+    }
+
     return {
       userInfo,
       accessToken,
@@ -176,6 +242,8 @@ export const useUserStore = defineStore(
       login,
       isRemember,
       $reset,
+      editUserName,
+      editUserPassword,
     };
   },
   {

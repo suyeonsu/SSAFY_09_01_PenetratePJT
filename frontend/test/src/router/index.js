@@ -6,8 +6,6 @@ import SearchDetailView from "@/views/tour/SearchDetailView.vue";
 import JoinView from "@/views/user/JoinView.vue";
 import LoginView from "@/views/user/LoginView.vue";
 import UserPageView from "@/views/user/UserPageView.vue";
-import MyPlaceListView from "@/views/tour/MyPlaceListView.vue";
-import MyPlaceDetailView from "@/views/tour/MyPlaceDetailView.vue";
 import FreeBoardViewVue from "@/views/board/FreeBoardView.vue";
 import FreeBoardListViewVue from "@/views/board/FreeBoardListView.vue";
 import FreeBoardEditViewVue from "@/views/board/FreeBoardEditView.vue";
@@ -22,7 +20,7 @@ const routes = [
     component: TourView,
     children: [
       {
-        path: "search",
+        path: "list",
         name: "searchList",
         component: SearchListView,
         children: [
@@ -30,18 +28,6 @@ const routes = [
             path: ":id",
             name: "searchDetail",
             component: SearchDetailView,
-          },
-        ],
-      },
-      {
-        path: "myPlace",
-        name: "myPlaceList",
-        component: MyPlaceListView,
-        children: [
-          {
-            path: ":id",
-            name: "myPlaceDetail",
-            component: MyPlaceDetailView,
           },
         ],
       },
